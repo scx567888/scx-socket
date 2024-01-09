@@ -95,7 +95,7 @@
     <properties>
 
         <!-- *********************** 以下为依赖包版本 *********************** -->
-        <scx-common.version>2.6.0</scx-common.version>
+        <scx-common.version>2.6.2</scx-common.version>
         <scx-logging.version>2.6.0</scx-logging.version>
         <testng.version>7.9.0</testng.version>
 
