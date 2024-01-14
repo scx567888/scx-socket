@@ -1,5 +1,6 @@
 package cool.scx.socket;
 
+import cool.scx.util.ScxFuture;
 import io.netty.util.Timeout;
 
 import java.lang.System.Logger;
@@ -19,7 +20,7 @@ public final class SendTask {
     private final ScxSocket scxSocket;
     private final AtomicInteger sendTimes;
     private Timeout resendThread;
-    private FutureHelper<Void> sendFuture;
+    private ScxFuture<Void> sendFuture;
 
     public SendTask(ScxSocketFrame socketFrame, SendOptions options, ScxSocket scxSocket) {
         this.socketFrame = socketFrame;
@@ -45,7 +46,7 @@ public final class SendTask {
             return;
         }
         //根据不同序列化配置发送不同消息
-        this.sendFuture = new FutureHelper<>(scxSocket.webSocket.writeTextMessage(this.socketFrame.toJson()));
+        this.sendFuture = new ScxFuture<>(scxSocket.webSocket.writeTextMessage(this.socketFrame.toJson()));
 
         this.sendFuture.onSuccess(webSocket -> {
             var currentSendTime = sendTimes.getAndIncrement();

@@ -1,5 +1,6 @@
 package cool.scx.socket;
 
+import cool.scx.util.ScxFuture;
 import io.netty.util.Timeout;
 import io.vertx.core.http.WebSocket;
 import io.vertx.core.http.WebSocketClient;
@@ -19,7 +20,7 @@ public final class ScxSocketClient extends TypeConverter {
     private final String clientID;
     private final ScxSocketClientOptions clientOptions;
     private Timeout reconnectTimeout;
-    private FutureHelper<WebSocket> connectFuture;
+    private ScxFuture<WebSocket> connectFuture;
     private Consumer<Void> onOpen;
 
     public ScxSocketClient(String uri, WebSocketClient webSocketClient, String clientID, ScxSocketClientOptions clientOptions) {
@@ -67,7 +68,7 @@ public final class ScxSocketClient extends TypeConverter {
         }
         //关闭上一次连接
         this.close();
-        this.connectFuture = new FutureHelper<>(webSocketClient.connect(connectOptions));
+        this.connectFuture = new ScxFuture<>(webSocketClient.connect(connectOptions));
         this.connectFuture.onSuccess((webSocket) -> {
             this.start(webSocket);
             this.doOpen();
