@@ -10,12 +10,13 @@ import static java.lang.System.Logger.Level.DEBUG;
 
 public class ScxSocket extends EventManager {
 
-    final ConcurrentMap<Long, SendTask> sendTaskMap;
+    protected final ConcurrentMap<Long, SendTask> sendTaskMap;
 
-    public ScxSocket(ScxSocketOptions options) {
-        super(options);
+    public ScxSocket(ScxSocketOptions options, String clientID) {
+        super(options, clientID);
         this.sendTaskMap = new ConcurrentHashMap<>();
     }
+
 
     @Override
     protected void send(ScxSocketFrame socketFrame, SendOptions options) {
@@ -58,7 +59,7 @@ public class ScxSocket extends EventManager {
 
         //LOGGER
         if (logger.isLoggable(DEBUG)) {
-            logger.log(DEBUG, "收到消息 : {0}", socketFrame.toJson());
+            logger.log(DEBUG, "CLIENT_ID : {0}, 收到消息 : {1}", clientID, socketFrame.toJson());
         }
 
     }
@@ -77,6 +78,10 @@ public class ScxSocket extends EventManager {
         var sendTask = sendTaskMap.get(ackFrame.ack_id);
         if (sendTask != null) {
             sendTask.clear();
+        }
+        //LOGGER
+        if (logger.isLoggable(DEBUG)) {
+            logger.log(DEBUG, "CLIENT_ID : {0}, 收到 ACK : {1}", clientID, ackFrame.toJson());
         }
     }
 

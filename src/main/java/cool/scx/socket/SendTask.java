@@ -59,14 +59,14 @@ public final class SendTask {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "发送成功 : {0}", this.socketFrame.toJson());
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送成功 : {1}", this.scxSocket.clientID, this.socketFrame.toJson());
             }
 
         }).onFailure((v) -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "发送失败 : {0}", this.socketFrame.toJson(), v);
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送失败 : {1}", this.scxSocket.clientID, this.socketFrame.toJson(), v);
             }
 
         });

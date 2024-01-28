@@ -15,8 +15,8 @@ public abstract class EventManager extends ScxSocketBase {
     private Consumer<Void> onClose;
     private Consumer<Throwable> onError;
 
-    public EventManager(ScxSocketOptions options) {
-        super(options);
+    public EventManager(ScxSocketOptions options, String clientID) {
+        super(options, clientID);
         this.duplicateFrameChecker = new DuplicateFrameChecker(options.getSeqIDClearTimeout());
         this.eventHandlerMap = new ConcurrentHashMap<>();
         this.responseCallbackMap = new ConcurrentHashMap<>();

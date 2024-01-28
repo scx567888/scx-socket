@@ -16,12 +16,18 @@ public abstract class ScxSocketBase {
 
     protected final Logger logger = getLogger(this.getClass().getName());
     protected final ScxSocketOptions options;
+    protected final String clientID;
     private final FrameCreator frameCreator;
     protected WebSocketBase webSocket;
 
-    protected ScxSocketBase(ScxSocketOptions options) {
+    protected ScxSocketBase(ScxSocketOptions options, String clientID) {
         this.options = options;
+        this.clientID = clientID;
         this.frameCreator = new FrameCreator();
+    }
+
+    public String clientID() {
+        return clientID;
     }
 
     public void send(String content) {
@@ -65,14 +71,14 @@ public abstract class ScxSocketBase {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "发送 ACK 成功 : {0}", ackFrame.toJson());
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 ACK 成功 : {1}", clientID, ackFrame.toJson());
             }
 
         }).onFailure(c -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "发送 ACK 失败 : {0}", ackFrame.toJson(), c);
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 ACK 失败 : {1}", clientID, ackFrame.toJson(), c);
             }
 
         });

@@ -11,20 +11,14 @@ import static java.lang.System.Logger.Level.DEBUG;
  */
 public final class ScxSocketClientConnect extends TypeConverter {
 
-    private final String clientID;
     private final ScxSocketServer scxSocketServer;
     private final ScxSocketServerOptions serverOptions;
     private Timeout removeClosedClientTimeout;
 
     public ScxSocketClientConnect(String clientID, ScxSocketServerOptions serverOptions, ScxSocketServer scxSocketServer) {
-        super(serverOptions);
-        this.clientID = clientID;
+        super(serverOptions, clientID);
         this.serverOptions = serverOptions;
         this.scxSocketServer = scxSocketServer;
-    }
-
-    public String clientID() {
-        return clientID;
     }
 
     @Override
@@ -56,7 +50,7 @@ public final class ScxSocketClientConnect extends TypeConverter {
 
         //LOGGER
         if (logger.isLoggable(DEBUG)) {
-            logger.log(DEBUG, "客户端超时未连接 已移除 , clientID : {0}", clientID);
+            logger.log(DEBUG, "CLIENT_ID : {0}, 客户端超时未连接 已移除", clientID);
         }
 
     }
