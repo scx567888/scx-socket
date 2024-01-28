@@ -17,7 +17,6 @@ public final class ScxSocketClient extends TypeConverter {
 
     private final WebSocketConnectOptions connectOptions;
     private final WebSocketClient webSocketClient;
-
     private final ScxSocketClientOptions clientOptions;
     private Timeout reconnectTimeout;
     private ScxFuture<WebSocket> connectFuture;
