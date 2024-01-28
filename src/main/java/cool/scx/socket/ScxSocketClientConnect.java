@@ -16,7 +16,7 @@ public final class ScxSocketClientConnect extends TypeConverter {
     private Timeout removeClosedClientTimeout;
 
     public ScxSocketClientConnect(String clientID, ScxSocketServerOptions serverOptions, ScxSocketServer scxSocketServer) {
-        super(serverOptions,clientID);
+        super(serverOptions, clientID);
         this.serverOptions = serverOptions;
         this.scxSocketServer = scxSocketServer;
     }

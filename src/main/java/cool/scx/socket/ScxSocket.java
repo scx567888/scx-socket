@@ -13,7 +13,7 @@ public class ScxSocket extends EventManager {
     protected final ConcurrentMap<Long, SendTask> sendTaskMap;
 
     public ScxSocket(ScxSocketOptions options, String clientID) {
-        super(options,clientID);
+        super(options, clientID);
         this.sendTaskMap = new ConcurrentHashMap<>();
     }
 
