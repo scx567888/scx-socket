@@ -59,7 +59,7 @@ public class ScxSocket extends EventManager {
 
         //LOGGER
         if (logger.isLoggable(DEBUG)) {
-            logger.log(DEBUG, "clientID : {0}, 收到消息 : {1}", clientID, socketFrame.toJson());
+            logger.log(DEBUG, "CLIENT_ID : {0}, 收到消息 : {1}", clientID, socketFrame.toJson());
         }
 
     }
@@ -81,7 +81,7 @@ public class ScxSocket extends EventManager {
         }
         //LOGGER
         if (logger.isLoggable(DEBUG)) {
-            logger.log(DEBUG, "clientID : {0}, 收到 ACK : {1}", clientID, ackFrame.toJson());
+            logger.log(DEBUG, "CLIENT_ID : {0}, 收到 ACK : {1}", clientID, ackFrame.toJson());
         }
     }
 

@@ -71,14 +71,14 @@ public abstract class ScxSocketBase {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "clientID : {0}, 发送 ACK 成功 : {1}", clientID, ackFrame.toJson());
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 ACK 成功 : {1}", clientID, ackFrame.toJson());
             }
 
         }).onFailure(c -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "clientID : {0}, 发送 ACK 失败 : {1}", clientID, ackFrame.toJson(), c);
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 ACK 失败 : {1}", clientID, ackFrame.toJson(), c);
             }
 
         });

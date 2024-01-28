@@ -83,14 +83,14 @@ public abstract class PingPongManager extends ScxSocket {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "clientID : {0},发送 PING 成功 : {1}",clientID, PONG_FRAME.toJson());
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PING 成功 : {1}", clientID, PONG_FRAME.toJson());
             }
 
         }).onFailure(c -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "clientID : {0},发送 PING 失败: {1}", PONG_FRAME.toJson(), c);
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PING 失败: {1}", PONG_FRAME.toJson(), c);
             }
 
         });
@@ -103,14 +103,14 @@ public abstract class PingPongManager extends ScxSocket {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "clientID : {0}, 发送 PONG 成功 : {1}", clientID, PONG_FRAME.toJson());
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PONG 成功 : {1}", clientID, PONG_FRAME.toJson());
             }
 
         }).onFailure(c -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "clientID : {0}, 发送 PONG 失败 : {1}", clientID, PONG_FRAME.toJson(), c);
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PONG 失败 : {1}", clientID, PONG_FRAME.toJson(), c);
             }
 
         });
@@ -123,7 +123,7 @@ public abstract class PingPongManager extends ScxSocket {
 
         //LOGGER
         if (logger.isLoggable(DEBUG)) {
-            logger.log(DEBUG, "clientID : {0}, 收到 PING : {1}", clientID, socketFrame.toJson());
+            logger.log(DEBUG, "CLIENT_ID : {0}, 收到 PING : {1}", clientID, socketFrame.toJson());
         }
     }
 
@@ -131,7 +131,7 @@ public abstract class PingPongManager extends ScxSocket {
 
         //LOGGER
         if (logger.isLoggable(DEBUG)) {
-            logger.log(DEBUG, "clientID : {0}, 收到 PONG : {1}", clientID, socketFrame.toJson());
+            logger.log(DEBUG, "CLIENT_ID : {0}, 收到 PONG : {1}", clientID, socketFrame.toJson());
         }
 
     }
