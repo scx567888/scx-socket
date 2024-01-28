@@ -59,7 +59,7 @@ public class ScxSocket extends EventManager {
 
         //LOGGER
         if (logger.isLoggable(DEBUG)) {
-            logger.log(DEBUG, "收到消息 : {0}", socketFrame.toJson());
+            logger.log(DEBUG, "clientID : {0}, 收到消息 : {1}", clientID, socketFrame.toJson());
         }
 
     }
@@ -78,6 +78,10 @@ public class ScxSocket extends EventManager {
         var sendTask = sendTaskMap.get(ackFrame.ack_id);
         if (sendTask != null) {
             sendTask.clear();
+        }
+        //LOGGER
+        if (logger.isLoggable(DEBUG)) {
+            logger.log(DEBUG, "clientID : {0}, 收到 ACK : {1}", clientID, ackFrame.toJson());
         }
     }
 
