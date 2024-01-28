@@ -83,14 +83,14 @@ public abstract class PingPongManager extends ScxSocket {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "发送 PING 成功 : {0}", PONG_FRAME.toJson());
+                logger.log(DEBUG, "clientID : {0},发送 PING 成功 : {1}",clientID, PONG_FRAME.toJson());
             }
 
         }).onFailure(c -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "发送 PING 失败: {0}", PONG_FRAME.toJson(), c);
+                logger.log(DEBUG, "clientID : {0},发送 PING 失败: {1}", PONG_FRAME.toJson(), c);
             }
 
         });
