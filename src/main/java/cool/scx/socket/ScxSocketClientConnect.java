@@ -50,7 +50,7 @@ public final class ScxSocketClientConnect extends TypeConverter {
 
         //LOGGER
         if (logger.isLoggable(DEBUG)) {
-            logger.log(DEBUG, "客户端超时未连接 已移除 , clientID : {0}", clientID);
+            logger.log(DEBUG, "clientID : {0}, 客户端超时未连接 已移除", clientID);
         }
 
     }
