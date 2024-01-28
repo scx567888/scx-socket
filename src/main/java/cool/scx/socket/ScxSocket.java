@@ -10,12 +10,13 @@ import static java.lang.System.Logger.Level.DEBUG;
 
 public class ScxSocket extends EventManager {
 
-    final ConcurrentMap<Long, SendTask> sendTaskMap;
+    protected final ConcurrentMap<Long, SendTask> sendTaskMap;
 
-    public ScxSocket(ScxSocketOptions options) {
-        super(options);
+    public ScxSocket(ScxSocketOptions options, String clientID) {
+        super(options,clientID);
         this.sendTaskMap = new ConcurrentHashMap<>();
     }
+
 
     @Override
     protected void send(ScxSocketFrame socketFrame, SendOptions options) {

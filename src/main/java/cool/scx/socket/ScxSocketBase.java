@@ -16,12 +16,18 @@ public abstract class ScxSocketBase {
 
     protected final Logger logger = getLogger(this.getClass().getName());
     protected final ScxSocketOptions options;
+    protected final String clientID;
     private final FrameCreator frameCreator;
     protected WebSocketBase webSocket;
 
-    protected ScxSocketBase(ScxSocketOptions options) {
+    protected ScxSocketBase(ScxSocketOptions options, String clientID) {
         this.options = options;
+        this.clientID = clientID;
         this.frameCreator = new FrameCreator();
+    }
+
+    public String clientID() {
+        return clientID;
     }
 
     public void send(String content) {

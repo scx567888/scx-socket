@@ -17,17 +17,16 @@ public final class ScxSocketClient extends TypeConverter {
 
     private final WebSocketConnectOptions connectOptions;
     private final WebSocketClient webSocketClient;
-    private final String clientID;
+
     private final ScxSocketClientOptions clientOptions;
     private Timeout reconnectTimeout;
     private ScxFuture<WebSocket> connectFuture;
     private Consumer<Void> onOpen;
 
     public ScxSocketClient(String uri, WebSocketClient webSocketClient, String clientID, ScxSocketClientOptions clientOptions) {
-        super(clientOptions);
+        super(clientOptions, clientID);
         this.clientOptions = clientOptions;
         this.webSocketClient = webSocketClient;
-        this.clientID = clientID;
         this.connectOptions = initConnectOptions(uri, this.clientID);
     }
 
@@ -108,10 +107,6 @@ public final class ScxSocketClient extends TypeConverter {
         removeConnectFuture();
         cancelReconnect();
         super.close();
-    }
-
-    public String clientID() {
-        return clientID;
     }
 
     @Override

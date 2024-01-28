@@ -15,8 +15,8 @@ public abstract class PingPongManager extends ScxSocket {
     private Timeout ping;
     private Timeout pingTimeout;
 
-    public PingPongManager(ScxSocketOptions options) {
-        super(options);
+    public PingPongManager(ScxSocketOptions options, String clientID) {
+        super(options, clientID);
     }
 
     private void startPingTimeout() {

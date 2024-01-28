@@ -17,8 +17,8 @@ public abstract class TypeConverter extends PingPongManager {
 
     private final static JsonMapper jsonMapper = ObjectUtils.jsonMapper();
 
-    public TypeConverter(ScxSocketOptions options) {
-        super(options);
+    public TypeConverter(ScxSocketOptions options, String clientID) {
+        super(options, clientID);
     }
 
     private static String toJson(Object data) {
