@@ -110,7 +110,7 @@ public abstract class PingPongManager extends ScxSocket {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "clientID: {0}, 发送 PONG 失败: {1}", clientID, PONG_FRAME.toJson(), c);
+                logger.log(DEBUG, "clientID : {0}, 发送 PONG 失败 : {1}", clientID, PONG_FRAME.toJson(), c);
             }
 
         });
