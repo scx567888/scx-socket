@@ -72,13 +72,13 @@
         <dependency>
             <groupId>cool.scx</groupId>
             <artifactId>scx-common</artifactId>
-            <version>${scx-common.version}</version>
+            <version>${scx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>cool.scx</groupId>
             <artifactId>scx-logging</artifactId>
-            <version>${scx-logging.version}</version>
+            <version>${scx.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -95,8 +95,7 @@
     <properties>
 
         <!-- *********************** 以下为依赖包版本 *********************** -->
-        <scx-common.version>2.7.0</scx-common.version>
-        <scx-logging.version>2.7.0</scx-logging.version>
+        <scx.version>2.7.0</scx.version>
         <testng.version>7.9.0</testng.version>
 
     </properties>
