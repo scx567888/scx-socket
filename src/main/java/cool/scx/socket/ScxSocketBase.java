@@ -93,14 +93,6 @@ public abstract class ScxSocketBase {
         this.webSocket.exceptionHandler(this::doError);
     }
 
-    protected void removeBind() {
-        if (this.webSocket != null && !this.webSocket.isClosed()) {
-            this.webSocket.textMessageHandler(null);
-            this.webSocket.closeHandler(null);
-            this.webSocket.exceptionHandler(null);
-        }
-    }
-
     protected void doSocketFrame(ScxSocketFrame socketFrame) {
         switch (socketFrame.type) {
             case MESSAGE -> doMessage(socketFrame);
