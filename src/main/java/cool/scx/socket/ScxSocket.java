@@ -110,8 +110,6 @@ public class ScxSocket extends EventManager {
     }
 
     public void close() {
-        //移除绑定事件
-        this.removeBind();
         //关闭 连接
         this.closeWebSocket();
         //取消所有重发任务

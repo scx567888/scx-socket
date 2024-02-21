@@ -105,7 +105,18 @@ public final class ScxSocketClient extends TypeConverter {
     public void close() {
         removeConnectFuture();
         cancelReconnect();
+        resetCloseOrErrorBind();
         super.close();
+    }
+
+    /**
+     * 重置 关闭和 错误的 handler
+     */
+    private void resetCloseOrErrorBind() {
+        if (this.webSocket != null && !this.webSocket.isClosed()) {
+            this.webSocket.closeHandler(super::doClose);
+            this.webSocket.exceptionHandler(super::doError);
+        }
     }
 
     @Override
