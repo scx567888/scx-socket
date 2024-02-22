@@ -45,9 +45,19 @@ public final class ScxSocketServer {
         if (clientID == null) {
             serverWebSocket.reject(400);
         }
-        var clientConnect = getOrCreateClient(clientID);
-        clientConnect.start(serverWebSocket);
-        callOnClientConnectAsync(clientConnect);
+
+        var newClientConnect = clientConnectMap.compute(clientID, (k, oldClientConnect) -> {
+            if (oldClientConnect == null) {
+                return new ScxSocketClientConnect(clientID, options, this);
+            } else {
+                //关闭旧连接 同时 将一些数据 存到 新的中
+                oldClientConnect.close();
+                return new ScxSocketClientConnect(oldClientConnect);
+            }
+        });
+
+        newClientConnect.start(serverWebSocket);
+        callOnClientConnectAsync(newClientConnect);
     }
 
     private void callOnClientConnect(ScxSocketClientConnect clientConnect) {
