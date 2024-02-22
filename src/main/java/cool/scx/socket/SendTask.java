@@ -17,7 +17,6 @@ public final class SendTask {
 
     private final ScxSocketFrame socketFrame;
     private final SendOptions options;
-    private final ScxSocket scxSocket;
     private final AtomicInteger sendTimes;
     private Timeout resendThread;
     private ScxFuture<Void> sendFuture;
@@ -25,13 +24,12 @@ public final class SendTask {
     public SendTask(ScxSocketFrame socketFrame, SendOptions options, ScxSocket scxSocket) {
         this.socketFrame = socketFrame;
         this.options = options;
-        this.scxSocket = scxSocket;
         this.sendTimes = new AtomicInteger(0);
     }
 
-    public void start() {
+    public void start(ScxSocket scxSocket) {
         //当前 websocket 不可用
-        if (this.scxSocket.isClosed()) {
+        if (scxSocket.isClosed()) {
             return;
         }
         //当前已经存在一个 发送中(并未完成发送) 的任务
@@ -41,7 +39,7 @@ public final class SendTask {
         //超过最大发送次数
         if (this.sendTimes.get() > options.getMaxResendTimes()) {
             if (options.getGiveUpIfReachMaxResendTimes()) {
-                clear();
+                clear(scxSocket);
             }
             return;
         }
@@ -52,21 +50,21 @@ public final class SendTask {
             var currentSendTime = sendTimes.getAndIncrement();
             //当需要 ack 时 创建 重复发送 延时
             if (options.getNeedAck()) {
-                this.resendThread = setTimeout(this::start, max(getDelayed(currentSendTime), options.getMaxResendDelayed()));
+                this.resendThread = setTimeout(() -> start(scxSocket), max(getDelayed(currentSendTime), options.getMaxResendDelayed()));
             } else {
-                clear();
+                clear(scxSocket);
             }
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "CLIENT_ID : {0}, 发送成功 : {1}", this.scxSocket.clientID, this.socketFrame.toJson());
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送成功 : {1}", scxSocket.clientID, this.socketFrame.toJson());
             }
 
         }).onFailure((v) -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "CLIENT_ID : {0}, 发送失败 : {1}", this.scxSocket.clientID, this.socketFrame.toJson(), v);
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送失败 : {1}", scxSocket.clientID, this.socketFrame.toJson(), v);
             }
 
         });
@@ -87,9 +85,9 @@ public final class SendTask {
     /**
      * 从任务列表中移除此任务
      */
-    public void clear() {
+    public void clear(ScxSocket scxSocket) {
         cancelResend();
-        this.scxSocket.sendTaskMap.remove(socketFrame.seq_id);
+        scxSocket.sendTaskMap.remove(socketFrame.seq_id);
     }
 
     public ScxSocketFrame socketFrame() {

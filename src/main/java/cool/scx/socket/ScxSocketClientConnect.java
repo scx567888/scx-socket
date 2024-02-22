@@ -21,6 +21,12 @@ public final class ScxSocketClientConnect extends TypeConverter {
         this.scxSocketServer = scxSocketServer;
     }
 
+    public ScxSocketClientConnect(ScxSocketClientConnect oldClientConnect) {
+        super(oldClientConnect);
+        this.serverOptions = oldClientConnect.serverOptions;
+        this.scxSocketServer = oldClientConnect.scxSocketServer;
+    }
+
     @Override
     void start(WebSocketBase webSocket) {
         super.start(webSocket);

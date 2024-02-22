@@ -19,6 +19,10 @@ public abstract class PingPongManager extends ScxSocket {
         super(options, clientID);
     }
 
+    public PingPongManager(PingPongManager pingPongManager) {
+        super(pingPongManager);
+    }
+
     private void startPingTimeout() {
         cancelPingTimeout();
         this.pingTimeout = setTimeout(this::doPingTimeout, options.getPingTimeout() + options.getPingInterval());

@@ -41,15 +41,28 @@ public class ScxSocket {
         this.frameCreator = new FrameCreator();
     }
 
+    public ScxSocket(ScxSocket scxSocket) {
+        this.sendTaskMap = scxSocket.sendTaskMap;
+        this.duplicateFrameChecker = scxSocket.duplicateFrameChecker;
+        this.eventHandlerMap = scxSocket.eventHandlerMap;
+        this.responseCallbackMap = scxSocket.responseCallbackMap;
+        this.options = scxSocket.options;
+        this.clientID = scxSocket.clientID;
+        this.frameCreator = scxSocket.frameCreator;
+        this.onMessage = scxSocket.onMessage;
+        this.onClose = scxSocket.onClose;
+        this.onError = scxSocket.onError;
+    }
+
     protected void send(ScxSocketFrame socketFrame, SendOptions options) {
         var sendTask = new SendTask(socketFrame, options, this);
         this.sendTaskMap.put(socketFrame.seq_id, sendTask);
-        sendTask.start();
+        sendTask.start(this);
     }
 
     private void startAllSendTask() {
         for (var value : sendTaskMap.values()) {
-            value.start();
+            value.start(this);
         }
     }
 
@@ -96,7 +109,7 @@ public class ScxSocket {
     protected void doAck(ScxSocketFrame ackFrame) {
         var sendTask = sendTaskMap.get(ackFrame.ack_id);
         if (sendTask != null) {
-            sendTask.clear();
+            sendTask.clear(this);
         }
         //LOGGER
         if (logger.isLoggable(DEBUG)) {
@@ -212,7 +225,9 @@ public class ScxSocket {
 
     protected void closeWebSocket() {
         if (this.webSocket != null && !this.webSocket.isClosed()) {
-            this.webSocket.close();
+            this.webSocket.close().onSuccess(c -> {
+
+            });
         }
     }
 
@@ -226,10 +241,16 @@ public class ScxSocket {
 
     public final void onClose(Consumer<Void> onClose) {
         this.onClose = onClose;
+        if (webSocket != null) {
+            webSocket.closeHandler(this::doClose);
+        }
     }
 
     public final void onError(Consumer<Throwable> onError) {
         this.onError = onError;
+        if (webSocket != null) {
+            webSocket.exceptionHandler(this::doError);
+        }
     }
 
     public final void onEvent(String eventName, Consumer<String> onEvent) {

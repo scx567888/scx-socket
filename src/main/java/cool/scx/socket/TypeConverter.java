@@ -21,6 +21,10 @@ public abstract class TypeConverter extends PingPongManager {
         super(options, clientID);
     }
 
+    public TypeConverter(TypeConverter typeConverter) {
+        super(typeConverter);
+    }
+
     private static String toJson(Object data) {
         return wrap(() -> jsonMapper.writeValueAsString(data));
     }
