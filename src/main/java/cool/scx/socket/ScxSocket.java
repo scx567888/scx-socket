@@ -49,6 +49,9 @@ public class ScxSocket {
         this.options = scxSocket.options;
         this.clientID = scxSocket.clientID;
         this.frameCreator = scxSocket.frameCreator;
+        this.onMessage = scxSocket.onMessage;
+        this.onClose = scxSocket.onClose;
+        this.onError = scxSocket.onError;
     }
 
     protected void send(ScxSocketFrame socketFrame, SendOptions options) {
