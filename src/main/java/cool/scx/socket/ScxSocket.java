@@ -225,7 +225,9 @@ public class ScxSocket {
 
     protected void closeWebSocket() {
         if (this.webSocket != null && !this.webSocket.isClosed()) {
-            this.webSocket.close();
+            this.webSocket.close().onSuccess(c -> {
+
+            });
         }
     }
 
@@ -239,10 +241,16 @@ public class ScxSocket {
 
     public final void onClose(Consumer<Void> onClose) {
         this.onClose = onClose;
+        if (webSocket != null) {
+            webSocket.closeHandler(this::doClose);
+        }
     }
 
     public final void onError(Consumer<Throwable> onError) {
         this.onError = onError;
+        if (webSocket != null) {
+            webSocket.exceptionHandler(this::doError);
+        }
     }
 
     public final void onEvent(String eventName, Consumer<String> onEvent) {
