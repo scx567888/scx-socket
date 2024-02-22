@@ -9,16 +9,27 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static cool.scx.socket.FrameCreator.createAckFrame;
+import static cool.scx.socket.ScxSocketFrame.Type.*;
 import static cool.scx.socket.ScxSocketFrame.fromJson;
-import static cool.scx.socket.ScxSocketFrame.ScxSocketFrameType.*;
 import static cool.scx.socket.SendOptions.DEFAULT_SEND_OPTIONS;
 import static cool.scx.util.StringUtils.isBlank;
 import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.getLogger;
 
-public class ScxSocket  {
+public class ScxSocket {
 
     protected final ConcurrentMap<Long, SendTask> sendTaskMap;
+    protected final System.Logger logger = getLogger(this.getClass().getName());
+    protected final ScxSocketOptions options;
+    protected final String clientID;
+    protected final DuplicateFrameChecker duplicateFrameChecker;
+    private final FrameCreator frameCreator;
+    private final ConcurrentMap<String, EventHandler> eventHandlerMap;
+    private final ConcurrentMap<Long, Consumer<String>> responseCallbackMap;
+    protected WebSocketBase webSocket;
+    private Consumer<String> onMessage;
+    private Consumer<Void> onClose;
+    private Consumer<Throwable> onError;
 
     public ScxSocket(ScxSocketOptions options, String clientID) {
         this.sendTaskMap = new ConcurrentHashMap<>();
@@ -124,12 +135,6 @@ public class ScxSocket  {
         this.duplicateFrameChecker.cancelAllClearTask();
     }
 
-    protected final System.Logger logger = getLogger(this.getClass().getName());
-    protected final ScxSocketOptions options;
-    protected final String clientID;
-    private final FrameCreator frameCreator;
-    protected WebSocketBase webSocket;
-
     public String clientID() {
         return clientID;
     }
@@ -214,13 +219,6 @@ public class ScxSocket  {
     public boolean isClosed() {
         return webSocket == null || webSocket.isClosed();
     }
-
-    protected final DuplicateFrameChecker duplicateFrameChecker;
-    private final ConcurrentMap<String, EventHandler> eventHandlerMap;
-    private final ConcurrentMap<Long, Consumer<String>> responseCallbackMap;
-    private Consumer<String> onMessage;
-    private Consumer<Void> onClose;
-    private Consumer<Throwable> onError;
 
     public final void onMessage(Consumer<String> onMessage) {
         this.onMessage = onMessage;

@@ -35,7 +35,7 @@ public class ScxSocketFrame {
         }
     }
 
-    public static class ScxSocketFrameType {
+    public static class Type {
 
         /**
          * 消息
