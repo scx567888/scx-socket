@@ -5,8 +5,8 @@ import io.vertx.core.http.WebSocketBase;
 
 import static cool.scx.socket.FrameCreator.PING_FRAME;
 import static cool.scx.socket.FrameCreator.PONG_FRAME;
-import static cool.scx.socket.ScxSocketFrameType.PING;
-import static cool.scx.socket.ScxSocketFrameType.PONG;
+import static cool.scx.socket.ScxSocketFrame.Type.PING;
+import static cool.scx.socket.ScxSocketFrame.Type.PONG;
 import static cool.scx.socket.ScxSocketHelper.setTimeout;
 import static java.lang.System.Logger.Level.DEBUG;
 

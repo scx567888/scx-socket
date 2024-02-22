@@ -3,7 +3,7 @@ package cool.scx.socket.test;
 import cool.scx.socket.ScxSocketFrame;
 import org.testng.annotations.Test;
 
-import static cool.scx.socket.ScxSocketFrameType.MESSAGE;
+import static cool.scx.socket.ScxSocketFrame.Type.MESSAGE;
 
 public class ScxSocketFrameTest {
 

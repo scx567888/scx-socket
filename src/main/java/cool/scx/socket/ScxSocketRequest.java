@@ -2,14 +2,14 @@ package cool.scx.socket;
 
 public class ScxSocketRequest {
 
-    private final ScxSocketBase scxSocketBase;
+    private final ScxSocket scxSocket;
 
     private final long ack_id;
 
     private boolean alreadyResponse;
 
-    public ScxSocketRequest(ScxSocketBase scxSocketBase, long ack_id) {
-        this.scxSocketBase = scxSocketBase;
+    public ScxSocketRequest(ScxSocket scxSocket, long ack_id) {
+        this.scxSocket = scxSocket;
         this.ack_id = ack_id;
         this.alreadyResponse = false;
     }
@@ -19,7 +19,7 @@ public class ScxSocketRequest {
             throw new UnsupportedOperationException("已经响应过 !!!");
         } else {
             alreadyResponse = true;
-            scxSocketBase.sendResponse(ack_id, payload);
+            scxSocket.sendResponse(ack_id, payload);
         }
     }
 
