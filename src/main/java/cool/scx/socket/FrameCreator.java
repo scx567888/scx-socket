@@ -2,7 +2,7 @@ package cool.scx.socket;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import static cool.scx.socket.ScxSocketFrameType.*;
+import static cool.scx.socket.ScxSocketFrame.ScxSocketFrameType.*;
 
 public final class FrameCreator {
 
