@@ -8,15 +8,15 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class ScxSocketEventManager {
+public class EventManager {
 
-    private final ConcurrentMap<String, ScxSocketEvent> onEventMap;
+    private final ConcurrentMap<String, EventHandler> onEventMap;
     private Consumer<Void> onOpen;
     private Consumer<String> onMessage;
     private Consumer<Void> onClose;
     private Consumer<Throwable> onError;
 
-    public ScxSocketEventManager() {
+    public EventManager() {
         this.onEventMap = new ConcurrentHashMap<>();
         this.onOpen = null;
         this.onMessage = null;
@@ -41,15 +41,15 @@ public class ScxSocketEventManager {
     }
 
     public void onEvent(String eventName, Consumer<String> onEvent) {
-        this.onEventMap.put(eventName, new ScxSocketEvent(onEvent));
+        this.onEventMap.put(eventName, new EventHandler(onEvent));
     }
 
     public void onEvent(String eventName, Function<String, String> onEvent) {
-        this.onEventMap.put(eventName, new ScxSocketEvent(onEvent));
+        this.onEventMap.put(eventName, new EventHandler(onEvent));
     }
 
     public void onEvent(String eventName, BiConsumer<String, ScxSocketRequest> onEvent) {
-        this.onEventMap.put(eventName, new ScxSocketEvent(onEvent));
+        this.onEventMap.put(eventName, new EventHandler(onEvent));
     }
 
     public void removeEvent(String eventName) {

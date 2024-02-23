@@ -6,24 +6,24 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-final class ScxSocketEvent {
+final class EventHandler {
 
     public final byte type;
     private Consumer<String> event0;
     private Function<String, String> event1;
     private BiConsumer<String, ScxSocketRequest> event2;
 
-    public ScxSocketEvent(Consumer<String> eventConsumer) {
+    public EventHandler(Consumer<String> eventConsumer) {
         this.event0 = eventConsumer;
         this.type = 0;
     }
 
-    public ScxSocketEvent(Function<String, String> eventFunction) {
+    public EventHandler(Function<String, String> eventFunction) {
         this.event1 = eventFunction;
         this.type = 1;
     }
 
-    public ScxSocketEvent(BiConsumer<String, ScxSocketRequest> eventBiConsumer) {
+    public EventHandler(BiConsumer<String, ScxSocketRequest> eventBiConsumer) {
         this.event2 = eventBiConsumer;
         this.type = 2;
     }
