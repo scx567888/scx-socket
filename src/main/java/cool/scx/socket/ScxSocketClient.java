@@ -114,8 +114,8 @@ public final class ScxSocketClient extends TypeConverter {
      */
     private void resetCloseOrErrorBind() {
         if (this.webSocket != null && !this.webSocket.isClosed()) {
-            this.webSocket.closeHandler(super::doClose);
-            this.webSocket.exceptionHandler(super::doError);
+            this.webSocket.closeHandler(null);
+            this.webSocket.exceptionHandler(null);
         }
     }
 
