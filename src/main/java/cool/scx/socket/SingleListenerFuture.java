@@ -16,40 +16,42 @@ public final class SingleListenerFuture<T> {
 
     public SingleListenerFuture(Future<T> vertxFuture) {
         this.vertxFuture = vertxFuture;
-        this.vertxFuture.onSuccess(this::_onSuccess).onFailure(this::_onFailure);
+        this.vertxFuture.onSuccess(this::_callOnSuccess).onFailure(this::_callOnFailure);
     }
 
-    public boolean isComplete() {
+    public synchronized boolean isComplete() {
         return vertxFuture.isComplete();
     }
 
     public synchronized SingleListenerFuture<T> onSuccess(Consumer<T> onSuccess) {
-        this._onSuccess = onSuccess;
         //如果已经有结果 即刻执行
         if (this.vertxFuture.succeeded()) {
-            this._onSuccess(this.vertxFuture.result());
+            onSuccess.accept(this.vertxFuture.result());
+        } else {
+            this._onSuccess = onSuccess;
         }
         return this;
     }
 
     public synchronized SingleListenerFuture<T> onFailure(Consumer<Throwable> onFailure) {
-        this._onFailure = onFailure;
         //如果已经有结果 即刻执行
         if (this.vertxFuture.failed()) {
-            this._onFailure(this.vertxFuture.cause());
+            onFailure.accept(this.vertxFuture.cause());
+        } else {
+            this._onFailure = onFailure;
         }
         return this;
     }
 
     //为了解决 Future 无法移除回调 采取的折中方式
-    private synchronized void _onSuccess(T t) {
+    private synchronized void _callOnSuccess(T t) {
         if (_onSuccess != null) {
             _onSuccess.accept(t);
         }
     }
 
     //为了解决 Future 无法移除回调 采取的折中方式
-    private synchronized void _onFailure(Throwable throwable) {
+    private synchronized void _callOnFailure(Throwable throwable) {
         if (_onFailure != null) {
             _onFailure.accept(throwable);
         }
