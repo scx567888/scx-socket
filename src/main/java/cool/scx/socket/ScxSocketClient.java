@@ -43,7 +43,10 @@ public final class ScxSocketClient extends TypeConverter {
 
     private void removeConnectFuture() {
         if (this.connectFuture != null) {
-            this.connectFuture.onSuccess(WebSocketBase::close).onFailure(null);
+            //只有当未完成的时候才设置
+            if (!this.connectFuture.isComplete()) {
+                this.connectFuture.onSuccess(WebSocketBase::close).onFailure(null);
+            }
             this.connectFuture = null;
         }
     }
