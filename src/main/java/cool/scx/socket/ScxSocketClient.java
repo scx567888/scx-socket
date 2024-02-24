@@ -1,8 +1,8 @@
 package cool.scx.socket;
 
-import cool.scx.util.ScxFuture;
 import io.netty.util.Timeout;
 import io.vertx.core.http.WebSocket;
+import io.vertx.core.http.WebSocketBase;
 import io.vertx.core.http.WebSocketClient;
 import io.vertx.core.http.WebSocketConnectOptions;
 
@@ -19,7 +19,7 @@ public final class ScxSocketClient extends TypeConverter {
     private final WebSocketClient webSocketClient;
     private final ScxSocketClientOptions clientOptions;
     private Timeout reconnectTimeout;
-    private ScxFuture<WebSocket> connectFuture;
+    private SingleListenerFuture<WebSocket> connectFuture;
     private Consumer<Void> onOpen;
 
     public ScxSocketClient(String uri, WebSocketClient webSocketClient, String clientID, ScxSocketClientOptions clientOptions) {
@@ -43,7 +43,7 @@ public final class ScxSocketClient extends TypeConverter {
 
     private void removeConnectFuture() {
         if (this.connectFuture != null) {
-            this.connectFuture.onSuccess(null).onFailure(null);
+            this.connectFuture.onSuccess(WebSocketBase::close).onFailure(null);
             this.connectFuture = null;
         }
     }
@@ -66,7 +66,7 @@ public final class ScxSocketClient extends TypeConverter {
         }
         //关闭上一次连接
         this.close();
-        this.connectFuture = new ScxFuture<>(webSocketClient.connect(connectOptions));
+        this.connectFuture = new SingleListenerFuture<>(webSocketClient.connect(connectOptions));
         this.connectFuture.onSuccess((webSocket) -> {
             this.start(webSocket);
             this.doOpen();
@@ -114,8 +114,8 @@ public final class ScxSocketClient extends TypeConverter {
      */
     private void resetCloseOrErrorBind() {
         if (this.webSocket != null && !this.webSocket.isClosed()) {
-            this.webSocket.closeHandler(super::doClose);
-            this.webSocket.exceptionHandler(super::doError);
+            this.webSocket.closeHandler(null);
+            this.webSocket.exceptionHandler(null);
         }
     }
 
