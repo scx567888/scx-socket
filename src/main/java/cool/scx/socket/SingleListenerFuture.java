@@ -26,7 +26,9 @@ public final class SingleListenerFuture<T> {
     public synchronized SingleListenerFuture<T> onSuccess(Consumer<T> onSuccess) {
         //如果已经有结果 即刻执行
         if (this.vertxFuture.succeeded()) {
-            onSuccess.accept(this.vertxFuture.result());
+            if (onSuccess != null) {
+                onSuccess.accept(this.vertxFuture.result());
+            }
         } else {
             this._onSuccess = onSuccess;
         }
@@ -36,7 +38,9 @@ public final class SingleListenerFuture<T> {
     public synchronized SingleListenerFuture<T> onFailure(Consumer<Throwable> onFailure) {
         //如果已经有结果 即刻执行
         if (this.vertxFuture.failed()) {
-            onFailure.accept(this.vertxFuture.cause());
+            if (onFailure != null) {
+                onFailure.accept(this.vertxFuture.cause());
+            }
         } else {
             this._onFailure = onFailure;
         }

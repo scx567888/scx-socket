@@ -2,6 +2,7 @@ package cool.scx.socket;
 
 import io.netty.util.Timeout;
 import io.vertx.core.http.WebSocket;
+import io.vertx.core.http.WebSocketBase;
 import io.vertx.core.http.WebSocketClient;
 import io.vertx.core.http.WebSocketConnectOptions;
 
@@ -42,7 +43,7 @@ public final class ScxSocketClient extends TypeConverter {
 
     private void removeConnectFuture() {
         if (this.connectFuture != null) {
-            this.connectFuture.onSuccess(null).onFailure(null);
+            this.connectFuture.onSuccess(WebSocketBase::close).onFailure(null);
             this.connectFuture = null;
         }
     }
