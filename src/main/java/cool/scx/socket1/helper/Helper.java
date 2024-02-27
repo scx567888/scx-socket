@@ -1,4 +1,4 @@
-package cool.scx.socket1;
+package cool.scx.socket1.helper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +13,7 @@ import io.vertx.core.http.WebSocketConnectOptions;
 import static cool.scx.util.ScxExceptionHelper.wrap;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-final class Helper {
+public final class Helper {
 
     public static final String SCX_SOCKET_CLIENT_ID = "scx-socket-client-id";
 
