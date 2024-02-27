@@ -1,4 +1,4 @@
-package cool.scx.socket;
+package cool.scx.socket1;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,33 +10,50 @@ import io.netty.util.Timeout;
 import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.http.WebSocketConnectOptions;
 
-import java.util.concurrent.TimeUnit;
-
 import static cool.scx.util.ScxExceptionHelper.wrap;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-final class ScxSocketHelper {
+final class Helper {
 
-    public static final String SCX_SOCKET_CLIENT_ID_KEY = "scx-socket-client-id";
+    public static final String SCX_SOCKET_CLIENT_ID = "scx-socket-client-id";
 
-    static final ObjectMapper JSON_MAPPER = ObjectUtils.jsonMapper();
+    private static final ObjectMapper JSON_MAPPER = ObjectUtils.jsonMapper();
 
     private static final HashedWheelTimer HASHED_WHEEL_TIMER = new HashedWheelTimer(Thread.ofVirtual().factory());
 
+    /**
+     * 创建 Timeout 使用 Netty 时间轮 可能不准确但占用资源少
+     * @param task 任务
+     * @param delay 延时
+     * @return Timeout
+     */
     public static Timeout setTimeout(Runnable task, long delay) {
-        return HASHED_WHEEL_TIMER.newTimeout((v) -> task.run(), delay, TimeUnit.MILLISECONDS);
+        return HASHED_WHEEL_TIMER.newTimeout((v) -> task.run(), delay, MILLISECONDS);
     }
 
+    /**
+     * 从 ServerWebSocket 中获取 clientID
+     *
+     * @param serverWebSocket serverWebSocket
+     * @return clientID 没有返回 null
+     */
     public static String getClientID(ServerWebSocket serverWebSocket) {
         var decoder = new QueryStringDecoder(serverWebSocket.uri());
         var parameters = decoder.parameters();
-        var clientIDValues = parameters.get(SCX_SOCKET_CLIENT_ID_KEY);
+        var clientIDValues = parameters.get(SCX_SOCKET_CLIENT_ID);
         return clientIDValues.isEmpty() ? null : clientIDValues.get(0);
     }
 
-    public static WebSocketConnectOptions initConnectOptions(String uri, String clientID) {
-        var o = new WebSocketConnectOptions().setAbsoluteURI(uri);
+    /**
+     * 根据 uri 和 clientID 创建 ConnectOptions
+     * @param absoluteURI 后台连接的绝对路径
+     * @param clientID 客户端 ID
+     * @return ConnectOptions
+     */
+    public static WebSocketConnectOptions createConnectOptions(String absoluteURI, String clientID) {
+        var o = new WebSocketConnectOptions().setAbsoluteURI(absoluteURI);
         var oldUri = o.getURI();
-        var newUri = URIBuilder.of(oldUri).addParam(SCX_SOCKET_CLIENT_ID_KEY, clientID).toString();
+        var newUri = URIBuilder.of(oldUri).addParam(SCX_SOCKET_CLIENT_ID, clientID).toString();
         o.setURI(newUri);
         return o;
     }
