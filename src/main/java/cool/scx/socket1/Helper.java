@@ -23,7 +23,8 @@ final class Helper {
 
     /**
      * 创建 Timeout 使用 Netty 时间轮 可能不准确但占用资源少
-     * @param task 任务
+     *
+     * @param task  任务
      * @param delay 延时
      * @return Timeout
      */
@@ -46,8 +47,9 @@ final class Helper {
 
     /**
      * 根据 uri 和 clientID 创建 ConnectOptions
+     *
      * @param absoluteURI 后台连接的绝对路径
-     * @param clientID 客户端 ID
+     * @param clientID    客户端 ID
      * @return ConnectOptions
      */
     public static WebSocketConnectOptions createConnectOptions(String absoluteURI, String clientID) {
