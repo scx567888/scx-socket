@@ -1,4 +1,6 @@
-package cool.scx.socket;
+package cool.scx.socket1.checker;
+
+import cool.scx.socket1.frame.ScxSocketFrame;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -6,18 +8,18 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * 重复帧检查器
  */
-public final class DuplicateFrameChecker {
+final class DuplicateFrameChecker {
 
-    final ConcurrentMap<DuplicateFrameKey, SeqIDClearTask> seqIDClearTaskMap;
+    public final ConcurrentMap<Key, ClearTask> clearTaskMap;
 
     /**
      * 重复帧校验 清理延时
      */
-    final long seqIDClearTimeout;
+    public final long clearTimeout;
 
-    public DuplicateFrameChecker(long seqIDClearTimeout) {
-        this.seqIDClearTaskMap = new ConcurrentHashMap<>();
-        this.seqIDClearTimeout = seqIDClearTimeout;
+    public DuplicateFrameChecker(long clearTimeout) {
+        this.clearTaskMap = new ConcurrentHashMap<>();
+        this.clearTimeout = clearTimeout;
     }
 
     /**
@@ -26,17 +28,17 @@ public final class DuplicateFrameChecker {
      * @param socketFrame socketFrame
      * @return true 是重发 false 不是重发
      */
-    public boolean checkDuplicate(ScxSocketFrame socketFrame) {
+    public boolean check(ScxSocketFrame socketFrame) {
         //只要 need_ack 的都可能会重发 所以需要 做校验
         if (!socketFrame.need_ack) {
             return true;
         }
-        var key = new DuplicateFrameKey(socketFrame.seq_id, socketFrame.now);
-        var task = seqIDClearTaskMap.get(key);
+        var key = new Key(socketFrame.seq_id, socketFrame.now);
+        var task = clearTaskMap.get(key);
         if (task == null) {
-            var seqIDClearTask = new SeqIDClearTask(key, this);
-            seqIDClearTaskMap.put(key, seqIDClearTask);
-            seqIDClearTask.start();
+            var clearTask = new ClearTask(key, this);
+            clearTaskMap.put(key, clearTask);
+            clearTask.start();
             return true;
         } else {
             return false;
@@ -44,13 +46,13 @@ public final class DuplicateFrameChecker {
     }
 
     public void startAllClearTask() {
-        for (var value : seqIDClearTaskMap.values()) {
+        for (var value : clearTaskMap.values()) {
             value.start();
         }
     }
 
     public void cancelAllClearTask() {
-        for (var value : seqIDClearTaskMap.values()) {
+        for (var value : clearTaskMap.values()) {
             value.cancel();
         }
     }
@@ -63,8 +65,8 @@ public final class DuplicateFrameChecker {
         Thread.ofVirtual().start(this::cancelAllClearTask);
     }
 
-    public long getSeqIDClearTimeout() {
-        return seqIDClearTimeout;
+    public long getClearTimeout() {
+        return clearTimeout;
     }
 
 }
