@@ -1,9 +1,9 @@
 package cool.scx.socket.test;
 
-import cool.scx.socket.ScxSocketFrame;
+import cool.scx.socket.frame.ScxSocketFrame;
 import org.testng.annotations.Test;
 
-import static cool.scx.socket.ScxSocketFrame.Type.MESSAGE;
+import static cool.scx.socket.frame.ScxSocketFrame.Type.MESSAGE;
 
 public class ScxSocketFrameTest {
 
