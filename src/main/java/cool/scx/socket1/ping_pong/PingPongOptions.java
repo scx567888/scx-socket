@@ -1,6 +1,8 @@
 package cool.scx.socket1.ping_pong;
 
-public class PingPongOptions {
+import cool.scx.socket1.core.ScxSocketOptions;
+
+public class PingPongOptions extends ScxSocketOptions {
 
     private int pingInterval;
 
