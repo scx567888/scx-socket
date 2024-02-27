@@ -25,7 +25,7 @@ public class ScxSocketClientTest extends InitLogger {
 
         //支持未连接时发送
         scxSocketClient.sendEvent("a", new User("jack", 24));
-        scxSocketClient.sendEvent("ss", List.of(new User("jack", 24)), (s,e) -> {
+        scxSocketClient.sendEvent("ss", List.of(new User("jack", 24)), (s, e) -> {
             System.out.println("服务端的响应 " + s);
         }, new TypeReference<List<User>>() {});
 
@@ -41,7 +41,7 @@ public class ScxSocketClientTest extends InitLogger {
 
         for (int i = 0; i < 10; i++) {
             int finalI = i;
-            scxSocketClient.sendEvent("aaa", i, (d,e) -> {
+            scxSocketClient.sendEvent("aaa", i, (d, e) -> {
                 System.out.println(d + "  " + finalI);
             });
         }
