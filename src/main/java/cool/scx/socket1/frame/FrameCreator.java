@@ -1,6 +1,6 @@
 package cool.scx.socket1.frame;
 
-import cool.scx.socket.SendOptions;
+import cool.scx.socket1.sender.SendOptions;
 
 import java.util.concurrent.atomic.AtomicLong;
 
