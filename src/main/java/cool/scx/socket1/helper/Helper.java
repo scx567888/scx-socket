@@ -19,7 +19,7 @@ public final class Helper {
 
     private static final ObjectMapper JSON_MAPPER = ObjectUtils.jsonMapper();
 
-    private static final HashedWheelTimer HASHED_WHEEL_TIMER = new HashedWheelTimer(Thread.ofVirtual().factory());
+    private static final HashedWheelTimer HASHED_WHEEL_TIMER = new HashedWheelTimer();
 
     /**
      * 创建 Timeout 使用 Netty 时间轮 可能不准确但占用资源少
