@@ -14,7 +14,7 @@ import static cool.scx.socket1.helper.Helper.setTimeout;
 import static java.lang.Math.max;
 import static java.lang.System.Logger.Level.DEBUG;
 
-public final class SendTask {
+final class SendTask {
 
     private static final Logger logger = System.getLogger(SendTask.class.getName());
 
@@ -32,7 +32,7 @@ public final class SendTask {
         this.sender = sender;
     }
 
-    public void start(ScxSocket scxSocket) {
+    public synchronized void start(ScxSocket scxSocket) {
         //当前 websocket 不可用
         if (scxSocket.isClosed()) {
             return;
@@ -44,7 +44,7 @@ public final class SendTask {
         //超过最大发送次数
         if (this.sendTimes.get() > options.getMaxResendTimes()) {
             if (options.getGiveUpIfReachMaxResendTimes()) {
-                clear();
+                this.clear();
             }
             return;
         }
@@ -55,9 +55,11 @@ public final class SendTask {
             var currentSendTime = sendTimes.getAndIncrement();
             //当需要 ack 时 创建 重复发送 延时
             if (options.getNeedAck()) {
-                this.resendTask = setTimeout(() -> start(scxSocket), max(getDelayed(currentSendTime), options.getMaxResendDelayed()));
+                //计算重新发送延时
+                var resendDelayed = max(getDelayed(currentSendTime), options.getMaxResendDelayed());
+                this.resendTask = setTimeout(() -> start(scxSocket), resendDelayed);
             } else {
-                clear();
+                this.clear();
             }
 
             //LOGGER
@@ -79,8 +81,8 @@ public final class SendTask {
     /**
      * 取消重发任务
      */
-    public void cancelResend() {
-        removeConnectFuture();
+    public synchronized void cancelResend() {
+        this.removeConnectFuture();
         if (this.resendTask != null) {
             this.resendTask.cancel();
             this.resendTask = null;
@@ -99,7 +101,7 @@ public final class SendTask {
         return this.socketFrame;
     }
 
-    private void removeConnectFuture() {
+    private synchronized void removeConnectFuture() {
         if (this.sendFuture != null) {
             this.sendFuture.onSuccess(null).onFailure(null);
             this.sendFuture = null;
