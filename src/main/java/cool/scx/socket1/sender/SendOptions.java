@@ -1,8 +1,6 @@
 package cool.scx.socket1.sender;
 
-public final class SendOptions {
-
-    public static final SendOptions DEFAULT_SEND_OPTIONS = new SendOptions();
+public class SendOptions {
 
     private boolean needAck;
 
