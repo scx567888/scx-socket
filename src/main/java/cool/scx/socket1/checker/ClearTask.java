@@ -2,25 +2,25 @@ package cool.scx.socket1.checker;
 
 import io.netty.util.Timeout;
 
-import static cool.scx.socket1.Helper.setTimeout;
+import static cool.scx.socket1.helper.Helper.setTimeout;
 
 final class ClearTask {
 
     private final DuplicateFrameChecker checker;
     private final Key key;
-    private Timeout clearTimeout;
+    private volatile Timeout clearTimeout;
 
     public ClearTask(Key key, DuplicateFrameChecker checker) {
         this.key = key;
         this.checker = checker;
     }
 
-    public void start() {
+    public synchronized void start() {
         cancel();
         this.clearTimeout = setTimeout(this::clear, this.checker.getClearTimeout());
     }
 
-    public void cancel() {
+    public synchronized void cancel() {
         if (this.clearTimeout != null) {
             this.clearTimeout.cancel();
             this.clearTimeout = null;
@@ -28,7 +28,6 @@ final class ClearTask {
     }
 
     private void clear() {
-        System.err.println("清楚了");
         this.checker.clearTaskMap.remove(key);
     }
 
