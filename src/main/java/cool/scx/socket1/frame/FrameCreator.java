@@ -1,12 +1,12 @@
-package cool.scx.socket1;
+package cool.scx.socket1.frame;
 
 import cool.scx.socket.SendOptions;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import static cool.scx.socket1.ScxSocketFrame.Type.*;
+import static cool.scx.socket1.frame.ScxSocketFrame.Type.*;
 
-final class FrameCreator {
+public final class FrameCreator {
 
     public static final ScxSocketFrame PING_FRAME = createPingFrame();
     public static final ScxSocketFrame PONG_FRAME = createPongFrame();
