@@ -1,13 +1,16 @@
-package cool.scx.socket;
+package cool.scx.socket1.sender;
 
+import cool.scx.socket.ScxSocket;
+import cool.scx.socket.SendOptions;
+import cool.scx.socket1.frame.ScxSocketFrame;
 import cool.scx.util.SingleListenerFuture;
 import io.netty.util.Timeout;
 
 import java.lang.System.Logger;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static cool.scx.socket.ScxSocketHelper.getDelayed;
-import static cool.scx.socket.ScxSocketHelper.setTimeout;
+import static cool.scx.socket1.helper.Helper.getDelayed;
+import static cool.scx.socket1.helper.Helper.setTimeout;
 import static java.lang.Math.max;
 import static java.lang.System.Logger.Level.DEBUG;
 
@@ -18,13 +21,15 @@ public final class SendTask {
     private final ScxSocketFrame socketFrame;
     private final SendOptions options;
     private final AtomicInteger sendTimes;
-    private Timeout resendThread;
+    private final FrameSender sender;
+    private Timeout resendTask;
     private SingleListenerFuture<Void> sendFuture;
 
-    public SendTask(ScxSocketFrame socketFrame, SendOptions options, ScxSocket scxSocket) {
+    public SendTask(ScxSocketFrame socketFrame, SendOptions options, FrameSender sender) {
         this.socketFrame = socketFrame;
         this.options = options;
         this.sendTimes = new AtomicInteger(0);
+        this.sender = sender;
     }
 
     public void start(ScxSocket scxSocket) {
@@ -39,7 +44,7 @@ public final class SendTask {
         //超过最大发送次数
         if (this.sendTimes.get() > options.getMaxResendTimes()) {
             if (options.getGiveUpIfReachMaxResendTimes()) {
-                clear(scxSocket);
+                clear();
             }
             return;
         }
@@ -50,21 +55,21 @@ public final class SendTask {
             var currentSendTime = sendTimes.getAndIncrement();
             //当需要 ack 时 创建 重复发送 延时
             if (options.getNeedAck()) {
-                this.resendThread = setTimeout(() -> start(scxSocket), max(getDelayed(currentSendTime), options.getMaxResendDelayed()));
+                this.resendTask = setTimeout(() -> start(scxSocket), max(getDelayed(currentSendTime), options.getMaxResendDelayed()));
             } else {
-                clear(scxSocket);
+                clear();
             }
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "CLIENT_ID : {0}, 发送成功 : {1}", scxSocket.clientID, this.socketFrame.toJson());
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送成功 : {1}", scxSocket.clientID(), this.socketFrame.toJson());
             }
 
         }).onFailure((v) -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "CLIENT_ID : {0}, 发送失败 : {1}", scxSocket.clientID, this.socketFrame.toJson(), v);
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送失败 : {1}", scxSocket.clientID(), this.socketFrame.toJson(), v);
             }
 
         });
@@ -76,22 +81,22 @@ public final class SendTask {
      */
     public void cancelResend() {
         removeConnectFuture();
-        if (this.resendThread != null) {
-            this.resendThread.cancel();
-            this.resendThread = null;
+        if (this.resendTask != null) {
+            this.resendTask.cancel();
+            this.resendTask = null;
         }
     }
 
     /**
      * 从任务列表中移除此任务
      */
-    public void clear(ScxSocket scxSocket) {
+    public void clear() {
         cancelResend();
-        scxSocket.status.sendTaskMap.remove(socketFrame.seq_id);
+        this.sender.sendTaskMap.remove(socketFrame.seq_id);
     }
 
     public ScxSocketFrame socketFrame() {
-        return socketFrame;
+        return this.socketFrame;
     }
 
     private void removeConnectFuture() {
