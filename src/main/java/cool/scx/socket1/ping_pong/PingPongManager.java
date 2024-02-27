@@ -1,31 +1,36 @@
-package cool.scx.socket;
+package cool.scx.socket1.ping_pong;
 
+import cool.scx.socket1.core.ScxSocket;
+import cool.scx.socket1.frame.ScxSocketFrame;
 import io.netty.util.Timeout;
 import io.vertx.core.http.WebSocketBase;
 
-import static cool.scx.socket.FrameCreator.PING_FRAME;
-import static cool.scx.socket.FrameCreator.PONG_FRAME;
-import static cool.scx.socket.ScxSocketFrame.Type.PING;
-import static cool.scx.socket.ScxSocketFrame.Type.PONG;
-import static cool.scx.socket.ScxSocketHelper.setTimeout;
+import static cool.scx.socket1.frame.FrameCreator.PING_FRAME;
+import static cool.scx.socket1.frame.FrameCreator.PONG_FRAME;
+import static cool.scx.socket1.frame.ScxSocketFrame.Type.PING;
+import static cool.scx.socket1.frame.ScxSocketFrame.Type.PONG;
+import static cool.scx.socket1.helper.Helper.setTimeout;
 import static java.lang.System.Logger.Level.DEBUG;
 
 public abstract class PingPongManager extends ScxSocket {
 
     private Timeout ping;
     private Timeout pingTimeout;
+    private final PingPongOptions pingPongOptions;
 
-    public PingPongManager(ScxSocketOptions options, String clientID) {
+    public PingPongManager(PingPongOptions options, String clientID) {
         super(options, clientID);
+        this.pingPongOptions = options;
     }
 
     public PingPongManager(PingPongManager pingPongManager) {
         super(pingPongManager);
+        this.pingPongOptions = pingPongManager.pingPongOptions;
     }
 
     private void startPingTimeout() {
         cancelPingTimeout();
-        this.pingTimeout = setTimeout(this::doPingTimeout, options.getPingTimeout() + options.getPingInterval());
+        this.pingTimeout = setTimeout(this::doPingTimeout, pingPongOptions.getPingTimeout() + pingPongOptions.getPingInterval());
     }
 
     private void cancelPingTimeout() {
@@ -40,7 +45,7 @@ public abstract class PingPongManager extends ScxSocket {
         this.ping = setTimeout(() -> {
             sendPing();
             startPing();
-        }, options.getPingInterval());
+        }, pingPongOptions.getPingInterval());
     }
 
     private void cancelPing() {
@@ -63,7 +68,7 @@ public abstract class PingPongManager extends ScxSocket {
     }
 
     @Override
-    void start(WebSocketBase webSocket) {
+    protected void start(WebSocketBase webSocket) {
         super.start(webSocket);
         //启动心跳
         this.startPing();
