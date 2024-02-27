@@ -1,6 +1,8 @@
-package cool.scx.socket;
+package cool.scx.socket1.server;
 
-public class ScxSocketServerOptions extends ScxSocketOptions {
+import cool.scx.socket1.ping_pong.PingPongOptions;
+
+public class ScxSocketServerOptions extends PingPongOptions {
 
     private int removeClosedClientTimeout;
 

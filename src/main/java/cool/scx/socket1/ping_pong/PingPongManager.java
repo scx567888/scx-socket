@@ -14,9 +14,9 @@ import static java.lang.System.Logger.Level.DEBUG;
 
 public abstract class PingPongManager extends ScxSocket {
 
+    private final PingPongOptions pingPongOptions;
     private Timeout ping;
     private Timeout pingTimeout;
-    private final PingPongOptions pingPongOptions;
 
     public PingPongManager(PingPongOptions options, String clientID) {
         super(options, clientID);

@@ -26,8 +26,8 @@ public interface EasyUseHelper {
     FrameCreator frameCreator();
 
     RequestManager requestManager();
-    
-     void send(ScxSocketFrame socketFrame, SendOptions options);
+
+    void send(ScxSocketFrame socketFrame, SendOptions options);
 
     default void send(String content) {
         send(frameCreator().createMessageFrame(content, DEFAULT_SEND_OPTIONS), DEFAULT_SEND_OPTIONS);

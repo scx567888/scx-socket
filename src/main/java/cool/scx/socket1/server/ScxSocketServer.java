@@ -1,5 +1,6 @@
-package cool.scx.socket;
+package cool.scx.socket1.server;
 
+import cool.scx.socket1.client.ScxSocketClientConnect;
 import io.vertx.core.http.ServerWebSocket;
 
 import java.util.Collection;
@@ -7,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 
-import static cool.scx.socket.ScxSocketHelper.getClientID;
+import static cool.scx.socket1.helper.Helper.getClientID;
 
 public final class ScxSocketServer {
 

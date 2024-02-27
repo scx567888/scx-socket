@@ -1,5 +1,6 @@
-package cool.scx.socket;
+package cool.scx.socket1.client;
 
+import cool.scx.socket1.ping_pong.PingPongManager;
 import cool.scx.util.SingleListenerFuture;
 import io.netty.util.Timeout;
 import io.vertx.core.http.WebSocket;
@@ -9,8 +10,8 @@ import io.vertx.core.http.WebSocketConnectOptions;
 
 import java.util.function.Consumer;
 
-import static cool.scx.socket.ScxSocketHelper.initConnectOptions;
-import static cool.scx.socket.ScxSocketHelper.setTimeout;
+import static cool.scx.socket1.helper.Helper.createConnectOptions;
+import static cool.scx.socket1.helper.Helper.setTimeout;
 import static cool.scx.util.RandomUtils.randomUUID;
 import static java.lang.System.Logger.Level.DEBUG;
 
@@ -27,7 +28,7 @@ public final class ScxSocketClient extends PingPongManager {
         super(clientOptions, clientID);
         this.clientOptions = clientOptions;
         this.webSocketClient = webSocketClient;
-        this.connectOptions = initConnectOptions(uri, this.clientID);
+        this.connectOptions = createConnectOptions(uri, this.clientID);
     }
 
     public ScxSocketClient(String uri, WebSocketClient webSocketClient, ScxSocketClientOptions options) {

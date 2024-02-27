@@ -1,6 +1,6 @@
 package cool.scx.socket1.sender;
 
-import cool.scx.socket.ScxSocket;
+import cool.scx.socket1.core.ScxSocket;
 import cool.scx.socket1.frame.ScxSocketFrame;
 import cool.scx.util.SingleListenerFuture;
 import io.netty.util.Timeout;

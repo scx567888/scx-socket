@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * 包裹具体事件 
+ * 包裹具体事件
  */
 public final class EventHandler {
 

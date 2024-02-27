@@ -20,10 +20,9 @@ import static java.lang.System.getLogger;
 
 public class ScxSocket extends EventManager implements EasyUseHelper {
 
+    public final String clientID;
     protected final System.Logger logger = getLogger(this.getClass().getName());
     protected final ScxSocketOptions options;
-    public final String clientID;
-
     protected final ScxSocketStatus status;
     public WebSocketBase webSocket;
 
@@ -91,7 +90,7 @@ public class ScxSocket extends EventManager implements EasyUseHelper {
         this._callOnError(e);
     }
 
-    void start(WebSocketBase webSocket) {
+    protected void start(WebSocketBase webSocket) {
         close();
         //绑定事件
         this.bind(webSocket);

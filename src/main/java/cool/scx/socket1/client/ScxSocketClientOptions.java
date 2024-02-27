@@ -1,6 +1,8 @@
-package cool.scx.socket;
+package cool.scx.socket1.client;
 
-public class ScxSocketClientOptions extends ScxSocketOptions {
+import cool.scx.socket1.ping_pong.PingPongOptions;
+
+public class ScxSocketClientOptions extends PingPongOptions {
 
     private int reconnectTimeout;
 
