@@ -1,5 +1,6 @@
 package cool.scx.socket;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cool.scx.util.ObjectUtils;
 import cool.scx.util.URIBuilder;
@@ -10,6 +11,8 @@ import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.http.WebSocketConnectOptions;
 
 import java.util.concurrent.TimeUnit;
+
+import static cool.scx.util.ScxExceptionHelper.wrap;
 
 final class ScxSocketHelper {
 
@@ -47,6 +50,18 @@ final class ScxSocketHelper {
      */
     public static long getDelayed(int times) {
         return 1000L * (1L << times);
+    }
+
+    public static String toJson(Object data) {
+        return wrap(() -> JSON_MAPPER.writeValueAsString(data));
+    }
+
+    public static <T> T fromJson(String json, Class<T> tClass) {
+        return wrap(() -> JSON_MAPPER.readValue(json, tClass));
+    }
+
+    public static <T> T fromJson(String json, TypeReference<T> valueTypeRef) {
+        return wrap(() -> JSON_MAPPER.readValue(json, valueTypeRef));
     }
 
 }

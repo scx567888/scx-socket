@@ -16,39 +16,31 @@ import static cool.scx.util.StringUtils.isBlank;
 import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.getLogger;
 
-public class ScxSocket {
+public class ScxSocket implements ScxSocketSender {
 
-    protected final ConcurrentMap<Long, SendTask> sendTaskMap;
     protected final System.Logger logger = getLogger(this.getClass().getName());
     protected final ScxSocketOptions options;
     protected final String clientID;
-    protected final DuplicateFrameChecker duplicateFrameChecker;
-    private final FrameCreator frameCreator;
+
+    protected final ScxSocketStatus status;
     private final ConcurrentMap<String, EventHandler> eventHandlerMap;
-    private final ConcurrentMap<Long, Consumer<String>> responseCallbackMap;
     protected WebSocketBase webSocket;
     private Consumer<String> onMessage;
     private Consumer<Void> onClose;
     private Consumer<Throwable> onError;
 
     public ScxSocket(ScxSocketOptions options, String clientID) {
-        this.sendTaskMap = new ConcurrentHashMap<>();
-        this.duplicateFrameChecker = new DuplicateFrameChecker(options.getSeqIDClearTimeout());
         this.eventHandlerMap = new ConcurrentHashMap<>();
-        this.responseCallbackMap = new ConcurrentHashMap<>();
         this.options = options;
         this.clientID = clientID;
-        this.frameCreator = new FrameCreator();
+        this.status = new ScxSocketStatus(options.getSeqIDClearTimeout());
     }
 
     public ScxSocket(ScxSocket scxSocket) {
-        this.sendTaskMap = scxSocket.sendTaskMap;
-        this.duplicateFrameChecker = scxSocket.duplicateFrameChecker;
         this.eventHandlerMap = scxSocket.eventHandlerMap;
-        this.responseCallbackMap = scxSocket.responseCallbackMap;
         this.options = scxSocket.options;
         this.clientID = scxSocket.clientID;
-        this.frameCreator = scxSocket.frameCreator;
+        this.status = scxSocket.status;
         this.onMessage = scxSocket.onMessage;
         this.onClose = scxSocket.onClose;
         this.onError = scxSocket.onError;
@@ -56,18 +48,18 @@ public class ScxSocket {
 
     protected void send(ScxSocketFrame socketFrame, SendOptions options) {
         var sendTask = new SendTask(socketFrame, options, this);
-        this.sendTaskMap.put(socketFrame.seq_id, sendTask);
+        this.status.sendTaskMap.put(socketFrame.seq_id, sendTask);
         sendTask.start(this);
     }
 
     private void startAllSendTask() {
-        for (var value : sendTaskMap.values()) {
+        for (var value : this.status.sendTaskMap.values()) {
             value.start(this);
         }
     }
 
     private void cancelAllResendTask() {
-        for (var value : sendTaskMap.values()) {
+        for (var value : this.status.sendTaskMap.values()) {
             value.cancelResend();
         }
     }
@@ -107,7 +99,7 @@ public class ScxSocket {
     }
 
     protected void doAck(ScxSocketFrame ackFrame) {
-        var sendTask = sendTaskMap.get(ackFrame.ack_id);
+        var sendTask = this.status.sendTaskMap.get(ackFrame.ack_id);
         if (sendTask != null) {
             sendTask.clear(this);
         }
@@ -136,7 +128,7 @@ public class ScxSocket {
         //启动所有发送任务
         this.startAllSendTask();
         //启动 校验重复清除任务
-        this.duplicateFrameChecker.startAllClearTask();
+        this.status.duplicateFrameChecker.startAllClearTask();
     }
 
     public void close() {
@@ -145,7 +137,7 @@ public class ScxSocket {
         //取消所有重发任务
         this.cancelAllResendTask();
         //取消 校验重复清除任务
-        this.duplicateFrameChecker.cancelAllClearTask();
+        this.status.duplicateFrameChecker.cancelAllClearTask();
     }
 
     public String clientID() {
@@ -153,35 +145,35 @@ public class ScxSocket {
     }
 
     public void send(String content) {
-        send(frameCreator.createMessageFrame(content, DEFAULT_SEND_OPTIONS), DEFAULT_SEND_OPTIONS);
+        send(status.frameCreator.createMessageFrame(content, DEFAULT_SEND_OPTIONS), DEFAULT_SEND_OPTIONS);
     }
 
     public void send(String content, SendOptions options) {
-        send(frameCreator.createMessageFrame(content, options), options);
+        send(status.frameCreator.createMessageFrame(content, options), options);
     }
 
     public void sendEvent(String eventName, String data) {
-        send(frameCreator.createEventFrame(eventName, data, DEFAULT_SEND_OPTIONS), DEFAULT_SEND_OPTIONS);
+        send(status.frameCreator.createEventFrame(eventName, data, DEFAULT_SEND_OPTIONS), DEFAULT_SEND_OPTIONS);
     }
 
     public void sendEvent(String eventName, String data, SendOptions options) {
-        send(frameCreator.createEventFrame(eventName, data, options), options);
+        send(status.frameCreator.createEventFrame(eventName, data, options), options);
     }
 
     public void sendEvent(String eventName, String data, Consumer<String> responseCallback) {
-        var eventFrame = frameCreator.createRequestFrame(eventName, data, DEFAULT_SEND_OPTIONS);
+        var eventFrame = status.frameCreator.createRequestFrame(eventName, data, DEFAULT_SEND_OPTIONS);
         setResponseCallback(eventFrame, responseCallback);
         send(eventFrame, DEFAULT_SEND_OPTIONS);
     }
 
     public void sendEvent(String eventName, String data, Consumer<String> responseCallback, SendOptions options) {
-        var eventFrame = frameCreator.createRequestFrame(eventName, data, options);
+        var eventFrame = status.frameCreator.createRequestFrame(eventName, data, options);
         setResponseCallback(eventFrame, responseCallback);
         send(eventFrame, options);
     }
 
     protected void sendResponse(long ack_id, String responseData) {
-        send(frameCreator.createResponseFrame(ack_id, responseData, DEFAULT_SEND_OPTIONS), DEFAULT_SEND_OPTIONS);
+        send(status.frameCreator.createResponseFrame(ack_id, responseData, DEFAULT_SEND_OPTIONS), DEFAULT_SEND_OPTIONS);
     }
 
     protected void sendAck(long ack_id) {
@@ -306,14 +298,14 @@ public class ScxSocket {
     }
 
     protected final void callOnMessageWithCheckDuplicateAsync(ScxSocketFrame socketFrame) {
-        if (this.onMessage != null && duplicateFrameChecker.checkDuplicate(socketFrame)) {
+        if (this.onMessage != null && this.status.duplicateFrameChecker.checkDuplicate(socketFrame)) {
             Thread.ofVirtual().start(() -> this.onMessage.accept(socketFrame.payload));
         }
     }
 
     protected final void callOnEventWithCheckDuplicateAsync(ScxSocketFrame socketFrame) {
         var eventHandler = this.eventHandlerMap.get(socketFrame.event_name);
-        if (eventHandler != null && duplicateFrameChecker.checkDuplicate(socketFrame)) {
+        if (eventHandler != null && this.status.duplicateFrameChecker.checkDuplicate(socketFrame)) {
             Thread.ofVirtual().start(() -> {
                 switch (eventHandler.type) {
                     case 0 -> {
@@ -345,18 +337,18 @@ public class ScxSocket {
     }
 
     protected final void setResponseCallback(ScxSocketFrame socketFrame, Consumer<String> responseCallback) {
-        this.responseCallbackMap.put(socketFrame.seq_id, responseCallback);
+        this.status.responseCallbackMap.put(socketFrame.seq_id, responseCallback);
     }
 
     protected void callResponseCallback(ScxSocketFrame socketFrame) {
-        var responseCallback = this.responseCallbackMap.remove(socketFrame.ack_id);
+        var responseCallback = this.status.responseCallbackMap.remove(socketFrame.ack_id);
         if (responseCallback != null) {
             responseCallback.accept(socketFrame.payload);
         }
     }
 
     protected void callResponseCallbackAsync(ScxSocketFrame socketFrame) {
-        var responseCallback = this.responseCallbackMap.remove(socketFrame.ack_id);
+        var responseCallback = this.status.responseCallbackMap.remove(socketFrame.ack_id);
         if (responseCallback != null) {
             Thread.ofVirtual().start(() -> responseCallback.accept(socketFrame.payload));
         }
