@@ -1,7 +1,7 @@
 package cool.scx.socket1.event;
 
-import cool.scx.socket1.request.ScxSocketRequest;
 import cool.scx.socket1.frame.ScxSocketFrame;
+import cool.scx.socket1.request.ScxSocketRequest;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -20,7 +20,7 @@ public abstract class EventManager {
     protected Consumer<Throwable> onError;
 
     public EventManager(EventManager oldEventManager) {
-        this.eventHandlerMap =oldEventManager. eventHandlerMap;
+        this.eventHandlerMap = oldEventManager.eventHandlerMap;
         this.onMessage = oldEventManager.onMessage;
         this.onClose = oldEventManager.onClose;
         this.onError = oldEventManager.onError;
