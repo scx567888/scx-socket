@@ -1,8 +1,8 @@
-package cool.scx.socket;
+package cool.scx.socket1.core;
 
 public final class SendOptions {
 
-    static final SendOptions DEFAULT_SEND_OPTIONS = new SendOptions();
+    public static final SendOptions DEFAULT_SEND_OPTIONS = new SendOptions();
 
     private boolean needAck;
 
@@ -13,10 +13,10 @@ public final class SendOptions {
     private boolean giveUpIfReachMaxResendTimes;
 
     public SendOptions() {
-        this.needAck = true;
-        this.maxResendTimes = 3;
-        this.maxResendDelayed = 1000 * 10;
-        this.giveUpIfReachMaxResendTimes = true;
+        this.needAck = true; // 默认需要 回执
+        this.maxResendTimes = 3; // 默认最大发送次数 3 次
+        this.maxResendDelayed = 1000 * 10; // 默认最大重发延时 10 秒
+        this.giveUpIfReachMaxResendTimes = true; // 默认抛弃 达到最大重发次数的消息
     }
 
     public boolean getNeedAck() {
