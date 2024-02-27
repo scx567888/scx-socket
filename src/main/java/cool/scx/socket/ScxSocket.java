@@ -16,13 +16,13 @@ import static cool.scx.util.StringUtils.isBlank;
 import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.getLogger;
 
-public class ScxSocket {
+public class ScxSocket implements ScxSocketSender {
 
     protected final System.Logger logger = getLogger(this.getClass().getName());
     protected final ScxSocketOptions options;
     protected final String clientID;
 
-    private final ScxSocketStatus status;
+    protected final ScxSocketStatus status;
     private final ConcurrentMap<String, EventHandler> eventHandlerMap;
     protected WebSocketBase webSocket;
     private Consumer<String> onMessage;

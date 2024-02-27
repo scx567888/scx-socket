@@ -87,7 +87,7 @@ public final class SendTask {
      */
     public void clear(ScxSocket scxSocket) {
         cancelResend();
-        scxSocket.sendTaskMap.remove(socketFrame.seq_id);
+        scxSocket.status.sendTaskMap.remove(socketFrame.seq_id);
     }
 
     public ScxSocketFrame socketFrame() {

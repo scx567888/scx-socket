@@ -9,7 +9,7 @@ import static java.lang.System.Logger.Level.DEBUG;
 /**
  * 客户端连接对象
  */
-public final class ScxSocketClientConnect extends TypeConverter {
+public final class ScxSocketClientConnect extends PingPongManager {
 
     private final ScxSocketServer scxSocketServer;
     private final ScxSocketServerOptions serverOptions;

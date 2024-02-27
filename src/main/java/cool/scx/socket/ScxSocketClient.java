@@ -14,7 +14,7 @@ import static cool.scx.socket.ScxSocketHelper.setTimeout;
 import static cool.scx.util.RandomUtils.randomUUID;
 import static java.lang.System.Logger.Level.DEBUG;
 
-public final class ScxSocketClient extends TypeConverter {
+public final class ScxSocketClient extends PingPongManager {
 
     private final WebSocketConnectOptions connectOptions;
     private final WebSocketClient webSocketClient;
