@@ -1,33 +1,37 @@
-package cool.scx.socket;
+package cool.scx.socket.sender;
 
+import cool.scx.socket.core.ScxSocket;
+import cool.scx.socket.frame.ScxSocketFrame;
 import cool.scx.util.SingleListenerFuture;
 import io.netty.util.Timeout;
 
 import java.lang.System.Logger;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static cool.scx.socket.ScxSocketHelper.getDelayed;
-import static cool.scx.socket.ScxSocketHelper.setTimeout;
+import static cool.scx.socket.helper.Helper.getDelayed;
+import static cool.scx.socket.helper.Helper.setTimeout;
 import static java.lang.Math.max;
 import static java.lang.System.Logger.Level.DEBUG;
 
-public final class SendTask {
+final class SendTask {
 
     private static final Logger logger = System.getLogger(SendTask.class.getName());
 
     private final ScxSocketFrame socketFrame;
     private final SendOptions options;
     private final AtomicInteger sendTimes;
-    private Timeout resendThread;
+    private final FrameSender sender;
+    private Timeout resendTask;
     private SingleListenerFuture<Void> sendFuture;
 
-    public SendTask(ScxSocketFrame socketFrame, SendOptions options, ScxSocket scxSocket) {
+    public SendTask(ScxSocketFrame socketFrame, SendOptions options, FrameSender sender) {
         this.socketFrame = socketFrame;
         this.options = options;
         this.sendTimes = new AtomicInteger(0);
+        this.sender = sender;
     }
 
-    public void start(ScxSocket scxSocket) {
+    public synchronized void start(ScxSocket scxSocket) {
         //当前 websocket 不可用
         if (scxSocket.isClosed()) {
             return;
@@ -39,7 +43,7 @@ public final class SendTask {
         //超过最大发送次数
         if (this.sendTimes.get() > options.getMaxResendTimes()) {
             if (options.getGiveUpIfReachMaxResendTimes()) {
-                clear(scxSocket);
+                this.clear();
             }
             return;
         }
@@ -50,21 +54,23 @@ public final class SendTask {
             var currentSendTime = sendTimes.getAndIncrement();
             //当需要 ack 时 创建 重复发送 延时
             if (options.getNeedAck()) {
-                this.resendThread = setTimeout(() -> start(scxSocket), max(getDelayed(currentSendTime), options.getMaxResendDelayed()));
+                //计算重新发送延时
+                var resendDelayed = max(getDelayed(currentSendTime), options.getMaxResendDelayed());
+                this.resendTask = setTimeout(() -> start(scxSocket), resendDelayed);
             } else {
-                clear(scxSocket);
+                this.clear();
             }
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "CLIENT_ID : {0}, 发送成功 : {1}", scxSocket.clientID, this.socketFrame.toJson());
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送成功 : {1}", scxSocket.clientID(), this.socketFrame.toJson());
             }
 
         }).onFailure((v) -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "CLIENT_ID : {0}, 发送失败 : {1}", scxSocket.clientID, this.socketFrame.toJson(), v);
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送失败 : {1}", scxSocket.clientID(), this.socketFrame.toJson(), v);
             }
 
         });
@@ -74,27 +80,27 @@ public final class SendTask {
     /**
      * 取消重发任务
      */
-    public void cancelResend() {
-        removeConnectFuture();
-        if (this.resendThread != null) {
-            this.resendThread.cancel();
-            this.resendThread = null;
+    public synchronized void cancelResend() {
+        this.removeConnectFuture();
+        if (this.resendTask != null) {
+            this.resendTask.cancel();
+            this.resendTask = null;
         }
     }
 
     /**
      * 从任务列表中移除此任务
      */
-    public void clear(ScxSocket scxSocket) {
+    public void clear() {
         cancelResend();
-        scxSocket.status.sendTaskMap.remove(socketFrame.seq_id);
+        this.sender.sendTaskMap.remove(socketFrame.seq_id);
     }
 
     public ScxSocketFrame socketFrame() {
-        return socketFrame;
+        return this.socketFrame;
     }
 
-    private void removeConnectFuture() {
+    private synchronized void removeConnectFuture() {
         if (this.sendFuture != null) {
             this.sendFuture.onSuccess(null).onFailure(null);
             this.sendFuture = null;

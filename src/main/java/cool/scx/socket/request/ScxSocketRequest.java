@@ -1,4 +1,6 @@
-package cool.scx.socket;
+package cool.scx.socket.request;
+
+import cool.scx.socket.core.ScxSocket;
 
 public class ScxSocketRequest {
 

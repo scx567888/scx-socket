@@ -1,8 +1,10 @@
-package cool.scx.socket;
+package cool.scx.socket.frame;
+
+import cool.scx.socket.sender.SendOptions;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import static cool.scx.socket.ScxSocketFrame.Type.*;
+import static cool.scx.socket.frame.ScxSocketFrame.Type.*;
 
 public final class FrameCreator {
 

@@ -1,10 +1,15 @@
-package cool.scx.socket;
+package cool.scx.socket.event;
+
+import cool.scx.socket.request.ScxSocketRequest;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-final class EventHandler {
+/**
+ * 包裹具体事件
+ */
+public final class EventHandler {
 
     public final byte type;
     private Consumer<String> event0;

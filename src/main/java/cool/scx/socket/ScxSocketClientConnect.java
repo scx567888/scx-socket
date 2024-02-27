@@ -1,9 +1,10 @@
 package cool.scx.socket;
 
+import cool.scx.socket.ping_pong.PingPongManager;
 import io.netty.util.Timeout;
 import io.vertx.core.http.WebSocketBase;
 
-import static cool.scx.socket.ScxSocketHelper.setTimeout;
+import static cool.scx.socket.helper.Helper.setTimeout;
 import static java.lang.System.Logger.Level.DEBUG;
 
 /**
@@ -28,7 +29,7 @@ public final class ScxSocketClientConnect extends PingPongManager {
     }
 
     @Override
-    void start(WebSocketBase webSocket) {
+    protected void start(WebSocketBase webSocket) {
         super.start(webSocket);
         cancelRemoveClosedClientTask();
     }
