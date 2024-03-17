@@ -2,15 +2,15 @@ package cool.scx.socket.helper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cool.scx.util.ObjectUtils;
-import cool.scx.util.URIBuilder;
+import cool.scx.common.util.ObjectUtils;
+import cool.scx.common.util.URIBuilder;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.http.WebSocketConnectOptions;
 
-import static cool.scx.util.ScxExceptionHelper.wrap;
+import static cool.scx.common.util.ScxExceptionHelper.wrap;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public final class Helper {

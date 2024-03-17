@@ -1,8 +1,8 @@
 package cool.scx.socket.sender;
 
+import cool.scx.common.util.SingleListenerFuture;
 import cool.scx.socket.core.ScxSocket;
 import cool.scx.socket.frame.ScxSocketFrame;
-import cool.scx.util.SingleListenerFuture;
 import io.netty.util.Timeout;
 
 import java.lang.System.Logger;

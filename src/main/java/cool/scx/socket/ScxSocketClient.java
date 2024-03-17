@@ -1,7 +1,7 @@
 package cool.scx.socket;
 
+import cool.scx.common.util.SingleListenerFuture;
 import cool.scx.socket.ping_pong.PingPongManager;
-import cool.scx.util.SingleListenerFuture;
 import io.netty.util.Timeout;
 import io.vertx.core.http.WebSocket;
 import io.vertx.core.http.WebSocketBase;
@@ -10,9 +10,9 @@ import io.vertx.core.http.WebSocketConnectOptions;
 
 import java.util.function.Consumer;
 
+import static cool.scx.common.util.RandomUtils.randomUUID;
 import static cool.scx.socket.helper.Helper.createConnectOptions;
 import static cool.scx.socket.helper.Helper.setTimeout;
-import static cool.scx.util.RandomUtils.randomUUID;
 import static java.lang.System.Logger.Level.DEBUG;
 
 public final class ScxSocketClient extends PingPongManager {
