@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import static cool.scx.socket.frame.FrameCreator.createAckFrame;
 import static cool.scx.socket.frame.ScxSocketFrame.Type.*;
 import static cool.scx.socket.frame.ScxSocketFrame.fromJson;
-import static cool.scx.util.StringUtils.isBlank;
+import static cool.scx.common.util.StringUtils.isBlank;
 import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.getLogger;
 
