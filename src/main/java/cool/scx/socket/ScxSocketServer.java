@@ -11,9 +11,9 @@ import static cool.scx.socket.helper.Helper.getClientID;
 
 public final class ScxSocketServer {
 
-    final ConcurrentMap<String, ScxSocketClientConnect> clientConnectMap;
+    final ConcurrentMap<String, ScxServerSocket> map;
     final ScxSocketServerOptions options;
-    private Consumer<ScxSocketClientConnect> onClientConnect;
+    private Consumer<ScxServerSocket> onConnect;
 
     public ScxSocketServer() {
         this(new ScxSocketServerOptions());
@@ -21,23 +21,23 @@ public final class ScxSocketServer {
 
     public ScxSocketServer(ScxSocketServerOptions options) {
         this.options = options;
-        this.clientConnectMap = new ConcurrentHashMap<>();
+        this.map = new ConcurrentHashMap<>();
     }
 
-    public void onClientConnect(Consumer<ScxSocketClientConnect> onClientConnect) {
-        this.onClientConnect = onClientConnect;
+    public void onConnect(Consumer<ScxServerSocket> onConnect) {
+        this.onConnect = onConnect;
     }
 
-    public ScxSocketClientConnect getClient(String clientID) {
-        return clientConnectMap.get(clientID);
+    public ScxServerSocket getClient(String clientID) {
+        return map.get(clientID);
     }
 
-    public ScxSocketClientConnect getOrCreateClient(String clientID) {
-        return clientConnectMap.computeIfAbsent(clientID, (k) -> new ScxSocketClientConnect(clientID, options, this));
+    public ScxServerSocket getOrCreateClient(String clientID) {
+        return map.computeIfAbsent(clientID, (k) -> new ScxServerSocket(null, clientID, this));
     }
 
-    public Collection<ScxSocketClientConnect> getClients() {
-        return clientConnectMap.values();
+    public Collection<ScxServerSocket> getClients() {
+        return map.values();
     }
 
     public void call(ServerWebSocket serverWebSocket) {
@@ -46,29 +46,22 @@ public final class ScxSocketServer {
             serverWebSocket.reject(400);
         }
 
-        var newClientConnect = clientConnectMap.compute(clientID, (k, oldClientConnect) -> {
+        var newClientConnect = map.compute(clientID, (k, oldClientConnect) -> {
             if (oldClientConnect == null) {
-                return new ScxSocketClientConnect(clientID, options, this);
+                return new ScxServerSocket(serverWebSocket, clientID, this);
             } else {
                 //关闭旧连接 同时 将一些数据 存到 新的中
                 oldClientConnect.close();
-                return new ScxSocketClientConnect(oldClientConnect);
+                return new ScxServerSocket(serverWebSocket, clientID, this, oldClientConnect.status);
             }
         });
-
-        newClientConnect.start(serverWebSocket);
-        callOnClientConnectAsync(newClientConnect);
+        newClientConnect.start();
+        _callOnConnect(newClientConnect);
     }
 
-    private void callOnClientConnect(ScxSocketClientConnect clientConnect) {
-        if (this.onClientConnect != null) {
-            this.onClientConnect.accept(clientConnect);
-        }
-    }
-
-    private void callOnClientConnectAsync(ScxSocketClientConnect clientConnect) {
-        if (this.onClientConnect != null) {
-            Thread.ofVirtual().start(() -> this.onClientConnect.accept(clientConnect));
+    private void _callOnConnect(ScxServerSocket clientConnect) {
+        if (this.onConnect != null) {
+            this.onConnect.accept(clientConnect);
         }
     }
 

@@ -22,21 +22,23 @@ public class ScxSocket extends EventManager implements EasyUseHelper {
 
     public final String clientID;
     protected final System.Logger logger = getLogger(this.getClass().getName());
-    protected final ScxSocketOptions options;
-    protected final ScxSocketStatus status;
-    public WebSocketBase webSocket;
+    final ScxSocketOptions options;
+    public final ScxSocketStatus status;
+    public final WebSocketBase webSocket;
+    private boolean isFirst;
 
-    public ScxSocket(ScxSocketOptions options, String clientID) {
-        this.options = options;
+    public ScxSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options, ScxSocketStatus status) {
+        this.webSocket = webSocket;
         this.clientID = clientID;
-        this.status = new ScxSocketStatus(options);
+        this.options = options;
+        this.status = status;
     }
 
-    public ScxSocket(ScxSocket scxSocket) {
-        super(scxSocket);
-        this.options = scxSocket.options;
-        this.clientID = scxSocket.clientID;
-        this.status = scxSocket.status;
+    public ScxSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options) {
+        this.webSocket = webSocket;
+        this.clientID = clientID;
+        this.options = options;
+        this.status = new ScxSocketStatus(options);
     }
 
     public void send(ScxSocketFrame socketFrame, SendOptions options) {
@@ -90,10 +92,9 @@ public class ScxSocket extends EventManager implements EasyUseHelper {
         this._callOnError(e);
     }
 
-    protected void start(WebSocketBase webSocket) {
-        close();
+    protected void start() {
         //绑定事件
-        this.bind(webSocket);
+        this.bind();
         //启动所有发送任务
         this.status.frameSender.startAllSendTask(this);
         //启动 校验重复清除任务
@@ -147,8 +148,7 @@ public class ScxSocket extends EventManager implements EasyUseHelper {
 
     }
 
-    protected void bind(WebSocketBase webSocket) {
-        this.webSocket = webSocket;
+    protected void bind() {
         this.webSocket.textMessageHandler(t -> doSocketFrame(fromJson(t)));
         this.webSocket.closeHandler(this::doClose);
         this.webSocket.exceptionHandler(this::doError);
@@ -212,6 +212,10 @@ public class ScxSocket extends EventManager implements EasyUseHelper {
     @Override
     public RequestManager requestManager() {
         return status.requestManager;
+    }
+
+    public boolean isFirst() {
+        return this.isFirst;
     }
 
 }

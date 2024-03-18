@@ -3,6 +3,7 @@ package cool.scx.socket;
 import cool.scx.common.util.SingleListenerFuture;
 import io.netty.util.Timeout;
 import io.vertx.core.http.WebSocket;
+import io.vertx.core.http.WebSocketBase;
 import io.vertx.core.http.WebSocketClient;
 import io.vertx.core.http.WebSocketConnectOptions;
 
@@ -21,7 +22,7 @@ public final class ScxSocketClient {
     private final WebSocketConnectOptions connectOptions;
     private final WebSocketClient webSocketClient;
     private final String clientID;
-    private final ScxSocketClientOptions clientOptions;
+    final ScxSocketClientOptions clientOptions;
 
     private ScxClientSocket clientSocket;
     private Consumer<ScxClientSocket> onConnect;
@@ -69,11 +70,12 @@ public final class ScxSocketClient {
             this.clientSocket = clientSocket != null ?
                     new ScxClientSocket(webSocket, clientID, this, clientSocket.status) :
                     new ScxClientSocket(webSocket, clientID, this);
+            this.clientSocket.start();
             this._callOnConnect(clientSocket);
-        }).onFailure((v) -> this._reconnect());
+        }).onFailure((v) -> this.reconnect());
     }
 
-    private void _reconnect() {
+    void reconnect() {
         //如果当前已经存在一个重连进程 则不进行重连
         if (this.reconnectTimeout != null) {
             return;
@@ -83,6 +85,23 @@ public final class ScxSocketClient {
             this.reconnectTimeout = null;
             this.connect();
         }, clientOptions.getReconnectTimeout());
+    }
+
+    void cancelReconnect() {
+        if (this.reconnectTimeout != null) {
+            this.reconnectTimeout.cancel();
+            this.reconnectTimeout = null;
+        }
+    }
+
+    void removeConnectFuture() {
+        if (this.connectFuture != null) {
+            //只有当未完成的时候才设置
+            if (!this.connectFuture.isComplete()) {
+                this.connectFuture.onSuccess(WebSocketBase::close).onFailure(null);
+            }
+            this.connectFuture = null;
+        }
     }
 
     private void _closeOldSocket() {

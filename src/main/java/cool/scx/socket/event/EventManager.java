@@ -19,13 +19,6 @@ public abstract class EventManager {
     protected Consumer<Void> onClose;
     protected Consumer<Throwable> onError;
 
-    public EventManager(EventManager oldEventManager) {
-        this.eventHandlerMap = oldEventManager.eventHandlerMap;
-        this.onMessage = oldEventManager.onMessage;
-        this.onClose = oldEventManager.onClose;
-        this.onError = oldEventManager.onError;
-    }
-
     public EventManager() {
         this.eventHandlerMap = new ConcurrentHashMap<>();
     }
