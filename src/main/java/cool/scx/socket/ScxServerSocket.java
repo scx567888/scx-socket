@@ -6,7 +6,6 @@ import cool.scx.socket.frame.ScxSocketFrame;
 import cool.scx.socket.ping_pong.PingPongManager;
 import io.netty.util.Timeout;
 import io.vertx.core.http.ServerWebSocket;
-import io.vertx.core.http.WebSocketBase;
 
 import static cool.scx.socket.frame.ScxSocketFrame.Type.PING;
 import static cool.scx.socket.frame.ScxSocketFrame.Type.PONG;
@@ -16,8 +15,8 @@ import static java.lang.System.Logger.Level.DEBUG;
 public class ScxServerSocket extends ScxSocket {
 
     private final ScxSocketServer scxSocketServer;
-    private Timeout removeClosedClientTimeout;
     private final PingPongManager pingPongManager;
+    private Timeout removeClosedClientTimeout;
 
     public ScxServerSocket(ServerWebSocket serverWebSocket, String clientID, ScxSocketServer scxSocketServer) {
         super(serverWebSocket, clientID, scxSocketServer.options);

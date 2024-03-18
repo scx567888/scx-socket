@@ -21,10 +21,10 @@ import static java.lang.System.getLogger;
 public class ScxSocket extends EventManager implements EasyUseHelper {
 
     public final String clientID;
-    protected final System.Logger logger = getLogger(this.getClass().getName());
-    final ScxSocketOptions options;
     public final ScxSocketStatus status;
     public final WebSocketBase webSocket;
+    protected final System.Logger logger = getLogger(this.getClass().getName());
+    final ScxSocketOptions options;
     private boolean isFirst;
 
     public ScxSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options, ScxSocketStatus status) {

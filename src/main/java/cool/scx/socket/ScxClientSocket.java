@@ -5,7 +5,6 @@ import cool.scx.socket.core.ScxSocketStatus;
 import cool.scx.socket.frame.ScxSocketFrame;
 import cool.scx.socket.ping_pong.PingPongManager;
 import io.vertx.core.http.WebSocket;
-import io.vertx.core.http.WebSocketBase;
 
 import static cool.scx.socket.frame.ScxSocketFrame.Type.PING;
 import static cool.scx.socket.frame.ScxSocketFrame.Type.PONG;
@@ -19,17 +18,17 @@ public final class ScxClientSocket extends ScxSocket {
     private final PingPongManager pingPongManager;
 
     public ScxClientSocket(WebSocket webSocket, String clientID, ScxSocketClient socketClient) {
-        super(webSocket, clientID, socketClient.clientOptions);
+        super(webSocket, clientID, socketClient.options());
         this.socketClient = socketClient;
         //心跳失败直接重连
-        this.pingPongManager = new PingPongManager(this.socketClient::connect, this, socketClient.clientOptions);
+        this.pingPongManager = new PingPongManager(this.socketClient::connect, this, socketClient.options());
     }
 
     public ScxClientSocket(WebSocket webSocket, String clientID, ScxSocketClient socketClient, ScxSocketStatus status) {
-        super(webSocket, clientID, socketClient.clientOptions, status);
+        super(webSocket, clientID, socketClient.options(), status);
         this.socketClient = socketClient;
         //心跳失败直接重连
-        this.pingPongManager = new PingPongManager(this.socketClient::connect, this, socketClient.clientOptions);
+        this.pingPongManager = new PingPongManager(this.socketClient::connect, this, socketClient.options());
     }
 
     @Override

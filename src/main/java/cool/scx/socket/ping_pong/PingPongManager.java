@@ -21,9 +21,9 @@ public final class PingPongManager {
 
     private final PingPongOptions pingPongOptions;
     private final ScxSocket scxSocket;
+    private final Runnable onPingTimeout;
     private Timeout ping;
     private Timeout pingTimeout;
-    private final Runnable onPingTimeout;
 
     public PingPongManager(Runnable onPingTimeout, ScxSocket scxSocket, PingPongOptions options) {
         this.onPingTimeout = onPingTimeout;

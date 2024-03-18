@@ -22,18 +22,18 @@ public final class ScxSocketClient {
     private final WebSocketConnectOptions connectOptions;
     private final WebSocketClient webSocketClient;
     private final String clientID;
-    final ScxSocketClientOptions clientOptions;
+    private final ScxSocketClientOptions options;
 
     private ScxClientSocket clientSocket;
     private Consumer<ScxClientSocket> onConnect;
     private SingleListenerFuture<WebSocket> connectFuture;
     private Timeout reconnectTimeout;
 
-    public ScxSocketClient(String uri, WebSocketClient webSocketClient, String clientID, ScxSocketClientOptions clientOptions) {
+    public ScxSocketClient(String uri, WebSocketClient webSocketClient, String clientID, ScxSocketClientOptions options) {
         this.connectOptions = createConnectOptions(uri, clientID);
         this.webSocketClient = webSocketClient;
         this.clientID = clientID;
-        this.clientOptions = clientOptions;
+        this.options = options;
     }
 
     public ScxSocketClient(String uri, WebSocketClient webSocketClient, ScxSocketClientOptions options) {
@@ -80,11 +80,11 @@ public final class ScxSocketClient {
         if (this.reconnectTimeout != null) {
             return;
         }
-        logger.log(DEBUG, "WebSocket 重连中... ");
+        logger.log(DEBUG, "WebSocket 重连中... CLIENT_ID : {0}",clientID);
         this.reconnectTimeout = setTimeout(() -> {  //没连接上会一直重连，设置延迟为5000毫秒避免请求过多
             this.reconnectTimeout = null;
             this.connect();
-        }, clientOptions.getReconnectTimeout());
+        }, options.getReconnectTimeout());
     }
 
     void cancelReconnect() {
@@ -110,4 +110,8 @@ public final class ScxSocketClient {
         }
     }
 
+    ScxSocketClientOptions options() {
+        return options;
+    }
+    
 }

@@ -23,7 +23,7 @@ public class ScxSocketClientTest extends InitLogger {
 
         var scxSocketClient = new ScxSocketClient("ws://127.0.0.1:8990/test", webSocketClient);
 
-        scxSocketClient.onConnect(c->{
+        scxSocketClient.onConnect(c -> {
             System.out.println("onOpen");
             //支持未连接时发送
             c.sendEvent("a", new User("jack", 24));
