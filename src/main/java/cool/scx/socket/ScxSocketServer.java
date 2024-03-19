@@ -24,16 +24,14 @@ public final class ScxSocketServer {
         this.serverSockets = new ConcurrentHashMap<>();
     }
 
-    public ScxServerSocket getServerSocket(String clientID) {
-        return serverSockets.get(clientID);
-    }
-
-    public Collection<ScxServerSocket> getServerSockets() {
-        return serverSockets.values();
-    }
-
     public void onConnect(Consumer<ScxServerSocket> onConnect) {
         this.onConnect = onConnect;
+    }
+
+    private void _callOnConnect(ScxServerSocket serverSocket) {
+        if (this.onConnect != null) {
+            this.onConnect.accept(serverSocket);
+        }
     }
 
     public void call(ServerWebSocket serverWebSocket) {
@@ -56,10 +54,12 @@ public final class ScxSocketServer {
         _callOnConnect(serverSocket);
     }
 
-    private void _callOnConnect(ScxServerSocket serverSocket) {
-        if (this.onConnect != null) {
-            this.onConnect.accept(serverSocket);
-        }
+    public ScxServerSocket getServerSocket(String clientID) {
+        return serverSockets.get(clientID);
+    }
+
+    public Collection<ScxServerSocket> getServerSockets() {
+        return serverSockets.values();
     }
 
     public static final class ScxSocketServerOptions extends PingPongOptions {
