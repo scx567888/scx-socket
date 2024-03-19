@@ -1,8 +1,5 @@
 package cool.scx.socket;
 
-/**
- * ScxSocket 帧结构
- */
 public final class ScxSocketFrame {
 
     public long seq_id;
