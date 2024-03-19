@@ -22,7 +22,7 @@ public final class ScxSocketClient {
     private final WebSocketConnectOptions connectOptions;
     private final WebSocketClient webSocketClient;
     private final String clientID;
-    private final ScxSocketClientOptions options;
+    final ScxSocketClientOptions options;
 
     private ScxClientSocket clientSocket;
     private Consumer<ScxClientSocket> onConnect;

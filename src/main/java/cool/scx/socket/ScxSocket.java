@@ -150,7 +150,7 @@ public class ScxSocket {
         if (socketFrame.need_ack) {
             sendAck(socketFrame.seq_id);
         }
-        status.requestManager.successAsync(socketFrame);
+        status.requestManager.success(socketFrame);
     }
 
     private void doAck(ScxSocketFrame ackFrame) {
