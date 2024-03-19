@@ -3,7 +3,6 @@ package cool.scx.socket;
 public class PingPongOptions extends ScxSocketOptions {
 
     private int pingInterval;
-
     private int pingTimeout;
 
     public PingPongOptions() {
