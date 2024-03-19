@@ -1,6 +1,6 @@
 package cool.scx.socket;
 
-public class ScxSocketStatus {
+final class ScxSocketStatus {
 
     final FrameCreator frameCreator;
     final DuplicateFrameChecker duplicateFrameChecker;
