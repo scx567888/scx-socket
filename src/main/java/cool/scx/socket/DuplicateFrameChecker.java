@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 重复帧检查器
  */
-public final class DuplicateFrameChecker {
+final class DuplicateFrameChecker {
 
     final ConcurrentMap<Key, ClearTask> clearTaskMap;
 
@@ -62,14 +62,6 @@ public final class DuplicateFrameChecker {
         for (var value : clearTaskMap.values()) {
             value.cancel();
         }
-    }
-
-    public void startAllClearTaskAsync() {
-        Thread.ofVirtual().start(this::startAllClearTask);
-    }
-
-    public void cancelAllClearTaskAsync() {
-        Thread.ofVirtual().start(this::cancelAllClearTask);
     }
 
     public long getClearTimeout() {
