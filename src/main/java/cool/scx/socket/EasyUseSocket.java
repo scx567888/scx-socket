@@ -13,7 +13,7 @@ import static cool.scx.socket.Helper.toJson;
 /**
  * 便于使用的 Socket
  */
-class EasyUseSocket extends ScxSocket {
+public class EasyUseSocket extends ScxSocket {
 
     private static final SendOptions DEFAULT_SEND_OPTIONS = new SendOptions();
     private static final RequestOptions DEFAULT_REQUEST_OPTIONS = new RequestOptions();
