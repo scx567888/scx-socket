@@ -3,7 +3,7 @@ package cool.scx.socket;
 /**
  * ScxSocket 帧结构
  */
-public class ScxSocketFrame {
+public final class ScxSocketFrame {
 
     /**
      * 序列 ID
