@@ -7,7 +7,7 @@ import java.util.function.Function;
 /**
  * 包裹具体事件
  */
-public final class EventHandler {
+final class EventHandler {
 
     public final byte type;
     private Consumer<String> event0;
