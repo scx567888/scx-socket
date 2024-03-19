@@ -18,7 +18,7 @@ import static cool.scx.socket.helper.Helper.toJson;
 /**
  * 便于使用的 接口
  */
-public interface EasyUse {
+public interface EasyUseSocket {
 
     SendOptions DEFAULT_SEND_OPTIONS = new SendOptions();
     RequestOptions DEFAULT_REQUEST_OPTIONS = new RequestOptions();
