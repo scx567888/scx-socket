@@ -23,7 +23,7 @@ final class FrameCreator {
         pongFrame.type = PONG;
         return pongFrame;
     }
-    
+
     public ScxSocketFrame createAckFrame(long ack_id) {
         var ackFrame = new ScxSocketFrame();
         ackFrame.type = ACK;
@@ -36,7 +36,7 @@ final class FrameCreator {
         ackFrame.payload = payload;
         return ackFrame;
     }
-    
+
     private ScxSocketFrame createBaseFrame(String content, SendOptions options) {
         var baseFrame = new ScxSocketFrame();
         baseFrame.seq_id = this.nowSeqID.getAndIncrement();
