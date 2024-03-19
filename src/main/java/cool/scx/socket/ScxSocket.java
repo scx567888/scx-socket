@@ -9,13 +9,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static cool.scx.common.util.StringUtils.isBlank;
-import static cool.scx.socket.FrameCreator.createAckFrame;
 import static cool.scx.socket.ScxSocketFrame.Type.*;
 import static cool.scx.socket.ScxSocketFrame.fromJson;
 import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.getLogger;
 
-public class ScxSocket implements EasyUseSocket {
+public class ScxSocket {
 
     protected final System.Logger logger = getLogger(this.getClass().getName());
 
@@ -23,6 +22,7 @@ public class ScxSocket implements EasyUseSocket {
     final String clientID;
     final ScxSocketOptions options;
     final ScxSocketStatus status;
+
     private final ConcurrentMap<String, EventHandler> eventHandlerMap;
     private Consumer<String> onMessage;
     private Consumer<Void> onClose;
@@ -45,34 +45,24 @@ public class ScxSocket implements EasyUseSocket {
 
     //***************** 对外属性 ******************
 
-    @Override
-    public final FrameCreator frameCreator() {
-        return this.status.frameCreator;
-    }
-
-    @Override
-    public final RequestManager requestManager() {
-        return this.status.requestManager;
-    }
-
     public final String clientID() {
         return clientID;
     }
 
     //***************** 发送事件 ********************
 
-    @Override
     public final void send(ScxSocketFrame socketFrame, SendOptions options) {
         this.status.frameSender.send(socketFrame, options, this);
     }
 
-    public void sendResponse(long ack_id, String responseData) {
+    public final void sendResponse(long ack_id, String responseData) {
         var sendOptions = new SendOptions();
-        send(status.frameCreator.createResponseFrame(ack_id, responseData, sendOptions), sendOptions);
+        var responseFrame = status.frameCreator.createResponseFrame(ack_id, responseData, sendOptions);
+        send(responseFrame, sendOptions);
     }
 
     private void sendAck(long ack_id) {
-        var ackFrame = createAckFrame(ack_id);
+        var ackFrame = status.frameCreator.createAckFrame(ack_id);
         var sendAckFuture = this.webSocket.writeTextMessage(ackFrame.toJson());
         sendAckFuture.onSuccess(v -> {
 
@@ -111,17 +101,14 @@ public class ScxSocket implements EasyUseSocket {
         this.webSocket.exceptionHandler(this::doError);
     }
 
-    @Override
     public final void onEvent(String eventName, Consumer<String> onEvent) {
         this.eventHandlerMap.put(eventName, new EventHandler(onEvent));
     }
 
-    @Override
     public final void onEvent(String eventName, Function<String, String> onEvent) {
         this.eventHandlerMap.put(eventName, new EventHandler(onEvent));
     }
 
-    @Override
     public final void onEvent(String eventName, BiConsumer<String, ScxSocketRequest> onEvent) {
         this.eventHandlerMap.put(eventName, new EventHandler(onEvent));
     }
@@ -163,7 +150,7 @@ public class ScxSocket implements EasyUseSocket {
         if (socketFrame.need_ack) {
             sendAck(socketFrame.seq_id);
         }
-        requestManager().successAsync(socketFrame);
+        status.requestManager.successAsync(socketFrame);
     }
 
     private void doAck(ScxSocketFrame ackFrame) {
@@ -215,8 +202,14 @@ public class ScxSocket implements EasyUseSocket {
 
     protected void closeWebSocket() {
         if (!this.webSocket.isClosed()) {
-            this.webSocket.close().onSuccess(c -> {
+            var closeFuture = this.webSocket.close();
 
+            closeFuture.onSuccess(c -> {
+                //todo
+                System.err.println("关闭成功 !!!");
+            }).onFailure(e -> {
+                //todo
+                e.printStackTrace();
             });
         }
     }
