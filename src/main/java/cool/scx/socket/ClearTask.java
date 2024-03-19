@@ -2,7 +2,7 @@ package cool.scx.socket;
 
 import io.netty.util.Timeout;
 
-import static cool.scx.socket.DuplicateFrameChecker.*;
+import static cool.scx.socket.DuplicateFrameChecker.Key;
 import static cool.scx.socket.Helper.setTimeout;
 
 final class ClearTask {

@@ -58,7 +58,6 @@ public final class ScxServerSocket extends PingPongManager {
     @Override
     protected void startPing() {
         //服务端无需 ping 客户端
-        
     }
 
     @Override
