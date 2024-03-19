@@ -65,22 +65,26 @@ public final class ScxSocketClient {
         }
         //关闭上一次连接
         this._closeOldSocket();
+        //创建连接
         this.connectFuture = new SingleListenerFuture<>(webSocketClient.connect(connectOptions));
         this.connectFuture.onSuccess((webSocket) -> {
+
+            //如果存在旧的 则使用旧的 status
             this.clientSocket = clientSocket != null ?
                     new ScxClientSocket(webSocket, clientID, this, clientSocket.status) :
                     new ScxClientSocket(webSocket, clientID, this);
+
             this.clientSocket.start();
             this._callOnConnect(clientSocket);
-        }).onFailure((v) -> this.reconnect());
+        }).onFailure(this::reconnect);
     }
 
-    void reconnect() {
+    void reconnect(Throwable e) {
         //如果当前已经存在一个重连进程 则不进行重连
         if (this.reconnectTimeout != null) {
             return;
         }
-        logger.log(DEBUG, "WebSocket 重连中... CLIENT_ID : {0}",clientID);
+        logger.log(DEBUG, "WebSocket 重连中... CLIENT_ID : {0}", clientID);
         this.reconnectTimeout = setTimeout(() -> {  //没连接上会一直重连，设置延迟为5000毫秒避免请求过多
             this.reconnectTimeout = null;
             this.connect();
@@ -110,8 +114,4 @@ public final class ScxSocketClient {
         }
     }
 
-    ScxSocketClientOptions options() {
-        return options;
-    }
-    
 }
