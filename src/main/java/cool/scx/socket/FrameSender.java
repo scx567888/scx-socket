@@ -3,7 +3,7 @@ package cool.scx.socket;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class FrameSender {
+final class FrameSender {
 
     final ConcurrentMap<Long, SendTask> sendTaskMap;
 
@@ -25,6 +25,7 @@ public class FrameSender {
     }
 
     public void startAllSendTask(ScxSocket scxSocket) {
+        //todo 循环时移除是否有影响?
         for (var value : this.sendTaskMap.values()) {
             value.start(scxSocket);
         }
@@ -34,14 +35,6 @@ public class FrameSender {
         for (var value : this.sendTaskMap.values()) {
             value.cancelResend();
         }
-    }
-
-    private void startAllSendTaskAsync(ScxSocket scxSocket) {
-        Thread.ofVirtual().start(() -> startAllSendTask(scxSocket));
-    }
-
-    private void cancelAllResendTaskAsync() {
-        Thread.ofVirtual().start(this::cancelAllResendTask);
     }
 
 }
