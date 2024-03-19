@@ -4,29 +4,26 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static cool.scx.socket.ScxSocketFrame.Type.*;
 
-/**
- * 帧创建器
- */
 final class FrameCreator {
 
-    private final AtomicLong seq_id;
+    private final AtomicLong nowSeqID;
 
     public FrameCreator() {
-        this.seq_id = new AtomicLong(0);
+        this.nowSeqID = new AtomicLong(0);
     }
 
-    private ScxSocketFrame createPingFrame() {
+    public ScxSocketFrame createPingFrame() {
         var pingFrame = new ScxSocketFrame();
         pingFrame.type = PING;
         return pingFrame;
     }
 
-    private ScxSocketFrame createPongFrame() {
+    public ScxSocketFrame createPongFrame() {
         var pongFrame = new ScxSocketFrame();
         pongFrame.type = PONG;
         return pongFrame;
     }
-
+    
     public ScxSocketFrame createAckFrame(long ack_id) {
         var ackFrame = new ScxSocketFrame();
         ackFrame.type = ACK;
@@ -39,10 +36,10 @@ final class FrameCreator {
         ackFrame.payload = payload;
         return ackFrame;
     }
-
+    
     private ScxSocketFrame createBaseFrame(String content, SendOptions options) {
         var baseFrame = new ScxSocketFrame();
-        baseFrame.seq_id = this.seq_id.getAndIncrement();
+        baseFrame.seq_id = this.nowSeqID.getAndIncrement();
         baseFrame.now = System.currentTimeMillis();
         baseFrame.need_ack = options.getNeedAck();
         baseFrame.payload = content;
