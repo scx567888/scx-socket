@@ -11,7 +11,7 @@ import static cool.scx.socket.Helper.getClientID;
 
 public final class ScxSocketServer {
 
-    final ConcurrentMap<String, ScxServerSocket> map;
+    final ConcurrentMap<String, ScxServerSocket> serverSockets;
     final ScxSocketServerOptions options;
     private Consumer<ScxServerSocket> onConnect;
 
@@ -21,23 +21,19 @@ public final class ScxSocketServer {
 
     public ScxSocketServer(ScxSocketServerOptions options) {
         this.options = options;
-        this.map = new ConcurrentHashMap<>();
+        this.serverSockets = new ConcurrentHashMap<>();
+    }
+
+    public ScxServerSocket getServerSocket(String clientID) {
+        return serverSockets.get(clientID);
+    }
+
+    public Collection<ScxServerSocket> getServerSockets() {
+        return serverSockets.values();
     }
 
     public void onConnect(Consumer<ScxServerSocket> onConnect) {
         this.onConnect = onConnect;
-    }
-
-    public ScxServerSocket getClient(String clientID) {
-        return map.get(clientID);
-    }
-
-    public ScxServerSocket getOrCreateClient(String clientID) {
-        return map.computeIfAbsent(clientID, (k) -> new ScxServerSocket(null, clientID, this));
-    }
-
-    public Collection<ScxServerSocket> getClients() {
-        return map.values();
     }
 
     public void call(ServerWebSocket serverWebSocket) {
@@ -46,22 +42,23 @@ public final class ScxSocketServer {
             serverWebSocket.reject(400);
         }
 
-        var newClientConnect = map.compute(clientID, (k, oldClientConnect) -> {
-            if (oldClientConnect == null) {
+        var serverSocket = serverSockets.compute(clientID, (k, old) -> {
+            if (old == null) {
                 return new ScxServerSocket(serverWebSocket, clientID, this);
             } else {
                 //关闭旧连接 同时 将一些数据 存到 新的中
-                oldClientConnect.close();
-                return new ScxServerSocket(serverWebSocket, clientID, this, oldClientConnect.status);
+                old.close();
+                return new ScxServerSocket(serverWebSocket, clientID, this, old.status);
             }
         });
-        newClientConnect.start();
-        _callOnConnect(newClientConnect);
+
+        serverSocket.start();
+        _callOnConnect(serverSocket);
     }
 
-    private void _callOnConnect(ScxServerSocket clientConnect) {
+    private void _callOnConnect(ScxServerSocket serverSocket) {
         if (this.onConnect != null) {
-            this.onConnect.accept(clientConnect);
+            this.onConnect.accept(serverSocket);
         }
     }
 
