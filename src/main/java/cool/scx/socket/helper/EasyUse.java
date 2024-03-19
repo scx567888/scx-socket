@@ -18,7 +18,7 @@ import static cool.scx.socket.helper.Helper.toJson;
 /**
  * 便于使用的 接口
  */
-public interface EasyUseHelper {
+public interface EasyUse {
 
     SendOptions DEFAULT_SEND_OPTIONS = new SendOptions();
     RequestOptions DEFAULT_REQUEST_OPTIONS = new RequestOptions();
@@ -28,6 +28,12 @@ public interface EasyUseHelper {
     RequestManager requestManager();
 
     void send(ScxSocketFrame socketFrame, SendOptions options);
+
+    void onEvent(String eventName, Consumer<String> onEvent);
+
+    void onEvent(String eventName, Function<String, String> onEvent);
+
+    void onEvent(String eventName, BiConsumer<String, ScxSocketRequest> onEvent);
 
     default void send(String content) {
         send(frameCreator().createMessageFrame(content, DEFAULT_SEND_OPTIONS), DEFAULT_SEND_OPTIONS);
@@ -56,12 +62,6 @@ public interface EasyUseHelper {
         requestManager().setResponseCallback(eventFrame, responseCallback, options);
         send(eventFrame, options);
     }
-
-    void onEvent(String eventName, Consumer<String> onEvent);
-
-    void onEvent(String eventName, Function<String, String> onEvent);
-
-    void onEvent(String eventName, BiConsumer<String, ScxSocketRequest> onEvent);
 
     default void send(Object data) {
         this.send(toJson(data));
