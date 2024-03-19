@@ -1,15 +1,11 @@
 package cool.scx.socket;
 
-import cool.scx.socket.core.ScxSocket;
-import cool.scx.socket.core.ScxSocketStatus;
-import cool.scx.socket.frame.ScxSocketFrame;
-import cool.scx.socket.ping_pong.PingPongManager;
 import io.netty.util.Timeout;
 import io.vertx.core.http.ServerWebSocket;
 
-import static cool.scx.socket.frame.ScxSocketFrame.Type.PING;
-import static cool.scx.socket.frame.ScxSocketFrame.Type.PONG;
-import static cool.scx.socket.helper.Helper.setTimeout;
+import static cool.scx.socket.ScxSocketFrame.Type.PING;
+import static cool.scx.socket.ScxSocketFrame.Type.PONG;
+import static cool.scx.socket.Helper.setTimeout;
 import static java.lang.System.Logger.Level.DEBUG;
 
 public class ScxServerSocket extends ScxSocket {
@@ -76,7 +72,7 @@ public class ScxServerSocket extends ScxSocket {
 
         //LOGGER
         if (logger.isLoggable(DEBUG)) {
-            logger.log(DEBUG, "CLIENT_ID : {0}, 客户端超时未连接 已移除", clientID);
+            logger.log(DEBUG, "CLIENT_ID : {0}, 客户端超时未连接 已移除", this.clientID);
         }
 
     }

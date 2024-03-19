@@ -1,19 +1,13 @@
-package cool.scx.socket.helper;
+package cool.scx.socket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import cool.scx.socket.frame.FrameCreator;
-import cool.scx.socket.frame.ScxSocketFrame;
-import cool.scx.socket.request.RequestManager;
-import cool.scx.socket.request.RequestOptions;
-import cool.scx.socket.request.ScxSocketRequest;
-import cool.scx.socket.sender.SendOptions;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static cool.scx.socket.helper.Helper.fromJson;
-import static cool.scx.socket.helper.Helper.toJson;
+import static cool.scx.socket.Helper.fromJson;
+import static cool.scx.socket.Helper.toJson;
 
 /**
  * 便于使用的 接口

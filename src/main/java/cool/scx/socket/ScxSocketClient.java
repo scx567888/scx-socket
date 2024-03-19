@@ -10,8 +10,8 @@ import io.vertx.core.http.WebSocketConnectOptions;
 import java.util.function.Consumer;
 
 import static cool.scx.common.util.RandomUtils.randomUUID;
-import static cool.scx.socket.helper.Helper.createConnectOptions;
-import static cool.scx.socket.helper.Helper.setTimeout;
+import static cool.scx.socket.Helper.createConnectOptions;
+import static cool.scx.socket.Helper.setTimeout;
 import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.getLogger;
 

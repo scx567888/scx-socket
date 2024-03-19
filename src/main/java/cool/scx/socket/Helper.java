@@ -1,4 +1,4 @@
-package cool.scx.socket.helper;
+package cool.scx.socket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

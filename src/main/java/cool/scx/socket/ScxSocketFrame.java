@@ -1,6 +1,4 @@
-package cool.scx.socket.frame;
-
-import cool.scx.socket.helper.Helper;
+package cool.scx.socket;
 
 /**
  * ScxSocket 帧结构

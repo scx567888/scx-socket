@@ -1,6 +1,4 @@
-package cool.scx.socket.checker;
-
-import cool.scx.socket.frame.ScxSocketFrame;
+package cool.scx.socket;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -76,6 +74,10 @@ public final class DuplicateFrameChecker {
 
     public long getClearTimeout() {
         return clearTimeout;
+    }
+
+    record Key(long seq_id, long now) {
+
     }
 
 }

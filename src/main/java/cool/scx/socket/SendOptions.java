@@ -1,4 +1,4 @@
-package cool.scx.socket.sender;
+package cool.scx.socket;
 
 public class SendOptions {
 

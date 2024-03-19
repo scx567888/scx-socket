@@ -1,7 +1,5 @@
 package cool.scx.socket;
 
-import cool.scx.socket.ping_pong.PingPongOptions;
-
 public class ScxSocketServerOptions extends PingPongOptions {
 
     private int statusKeepTime;

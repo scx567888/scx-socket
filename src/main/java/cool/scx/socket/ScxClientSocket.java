@@ -1,13 +1,9 @@
 package cool.scx.socket;
 
-import cool.scx.socket.core.ScxSocket;
-import cool.scx.socket.core.ScxSocketStatus;
-import cool.scx.socket.frame.ScxSocketFrame;
-import cool.scx.socket.ping_pong.PingPongManager;
 import io.vertx.core.http.WebSocket;
 
-import static cool.scx.socket.frame.ScxSocketFrame.Type.PING;
-import static cool.scx.socket.frame.ScxSocketFrame.Type.PONG;
+import static cool.scx.socket.ScxSocketFrame.Type.PING;
+import static cool.scx.socket.ScxSocketFrame.Type.PONG;
 
 /**
  * 客户端 Socket 对象

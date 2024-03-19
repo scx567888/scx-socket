@@ -1,7 +1,4 @@
-package cool.scx.socket.sender;
-
-import cool.scx.socket.core.ScxSocket;
-import cool.scx.socket.frame.ScxSocketFrame;
+package cool.scx.socket;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

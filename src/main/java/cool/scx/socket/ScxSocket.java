@@ -1,11 +1,5 @@
 package cool.scx.socket;
 
-import cool.scx.socket.frame.FrameCreator;
-import cool.scx.socket.frame.ScxSocketFrame;
-import cool.scx.socket.helper.EasyUseSocket;
-import cool.scx.socket.request.RequestManager;
-import cool.scx.socket.request.ScxSocketRequest;
-import cool.scx.socket.sender.SendOptions;
 import io.vertx.core.http.WebSocketBase;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,9 +9,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static cool.scx.common.util.StringUtils.isBlank;
-import static cool.scx.socket.frame.FrameCreator.createAckFrame;
-import static cool.scx.socket.frame.ScxSocketFrame.Type.*;
-import static cool.scx.socket.frame.ScxSocketFrame.fromJson;
+import static cool.scx.socket.FrameCreator.createAckFrame;
+import static cool.scx.socket.ScxSocketFrame.Type.*;
+import static cool.scx.socket.ScxSocketFrame.fromJson;
 import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.getLogger;
 
@@ -25,9 +19,9 @@ public class ScxSocket implements EasyUseSocket {
 
     protected final System.Logger logger = getLogger(this.getClass().getName());
 
-    private final WebSocketBase webSocket;
-    private final String clientID;
-    private final ScxSocketOptions options;
+    final WebSocketBase webSocket;
+    final String clientID;
+    final ScxSocketOptions options;
     final ScxSocketStatus status;
     private final ConcurrentMap<String, EventHandler> eventHandlerMap;
     private Consumer<String> onMessage;
@@ -72,7 +66,7 @@ public class ScxSocket implements EasyUseSocket {
         this.status.frameSender.send(socketFrame, options, this);
     }
 
-    private void sendResponse(long ack_id, String responseData) {
+    public void sendResponse(long ack_id, String responseData) {
         var sendOptions = new SendOptions();
         send(status.frameCreator.createResponseFrame(ack_id, responseData, sendOptions), sendOptions);
     }

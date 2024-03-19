@@ -1,6 +1,4 @@
-package cool.scx.socket.event;
-
-import cool.scx.socket.request.ScxSocketRequest;
+package cool.scx.socket;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;

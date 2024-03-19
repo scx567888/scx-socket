@@ -1,14 +1,12 @@
-package cool.scx.socket.ping_pong;
+package cool.scx.socket;
 
-import cool.scx.socket.core.ScxSocket;
-import cool.scx.socket.frame.ScxSocketFrame;
 import io.netty.util.Timeout;
 
 import java.lang.System.Logger;
 
-import static cool.scx.socket.frame.FrameCreator.PING_FRAME;
-import static cool.scx.socket.frame.FrameCreator.PONG_FRAME;
-import static cool.scx.socket.helper.Helper.setTimeout;
+import static cool.scx.socket.FrameCreator.PING_FRAME;
+import static cool.scx.socket.FrameCreator.PONG_FRAME;
+import static cool.scx.socket.Helper.setTimeout;
 import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.getLogger;
 

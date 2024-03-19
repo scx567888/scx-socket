@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 
-import static cool.scx.socket.helper.Helper.getClientID;
+import static cool.scx.socket.Helper.getClientID;
 
 public final class ScxSocketServer {
 

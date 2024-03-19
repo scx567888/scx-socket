@@ -1,6 +1,6 @@
-package cool.scx.socket.request;
+package cool.scx.socket;
 
-import cool.scx.socket.sender.SendOptions;
+import cool.scx.socket.SendOptions;
 
 public class RequestOptions extends SendOptions {
 

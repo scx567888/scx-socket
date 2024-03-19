@@ -1,6 +1,4 @@
-package cool.scx.socket.ping_pong;
-
-import cool.scx.socket.core.ScxSocketOptions;
+package cool.scx.socket;
 
 public class PingPongOptions extends ScxSocketOptions {
 
