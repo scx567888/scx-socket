@@ -42,6 +42,9 @@ public final class Helper {
         var decoder = new QueryStringDecoder(serverWebSocket.uri());
         var parameters = decoder.parameters();
         var clientIDValues = parameters.get(SCX_SOCKET_CLIENT_ID);
+        if (clientIDValues == null) {
+            return null;
+        }
         return clientIDValues.isEmpty() ? null : clientIDValues.get(0);
     }
 
