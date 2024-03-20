@@ -1,11 +1,10 @@
-package cool.scx.socket.request;
+package cool.scx.socket;
 
-import cool.scx.socket.helper.Helper;
 import io.netty.util.Timeout;
 
 import java.util.function.BiConsumer;
 
-public class RequestTask {
+final class RequestTask {
 
     private final BiConsumer<String, Throwable> responseCallback;
     private final RequestManager requestManager;

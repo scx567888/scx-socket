@@ -1,6 +1,4 @@
-package cool.scx.socket.checker;
-
-import cool.scx.socket.frame.ScxSocketFrame;
+package cool.scx.socket;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -9,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 重复帧检查器
  */
-public final class DuplicateFrameChecker {
+final class DuplicateFrameChecker {
 
     final ConcurrentMap<Key, ClearTask> clearTaskMap;
 
@@ -66,16 +64,12 @@ public final class DuplicateFrameChecker {
         }
     }
 
-    public void startAllClearTaskAsync() {
-        Thread.ofVirtual().start(this::startAllClearTask);
-    }
-
-    public void cancelAllClearTaskAsync() {
-        Thread.ofVirtual().start(this::cancelAllClearTask);
-    }
-
     public long getClearTimeout() {
         return clearTimeout;
+    }
+
+    record Key(long seq_id, long now) {
+
     }
 
 }

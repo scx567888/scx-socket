@@ -1,13 +1,9 @@
-package cool.scx.socket.request;
+package cool.scx.socket;
 
-import cool.scx.socket.core.ScxSocket;
-
-public class ScxSocketRequest {
+public final class ScxSocketRequest {
 
     private final ScxSocket scxSocket;
-
     private final long ack_id;
-
     private boolean alreadyResponse;
 
     public ScxSocketRequest(ScxSocket scxSocket, long ack_id) {

@@ -1,11 +1,6 @@
-package cool.scx.socket.core;
+package cool.scx.socket;
 
-import cool.scx.socket.checker.DuplicateFrameChecker;
-import cool.scx.socket.frame.FrameCreator;
-import cool.scx.socket.request.RequestManager;
-import cool.scx.socket.sender.FrameSender;
-
-public class ScxSocketStatus {
+final class ScxSocketStatus {
 
     final FrameCreator frameCreator;
     final DuplicateFrameChecker duplicateFrameChecker;

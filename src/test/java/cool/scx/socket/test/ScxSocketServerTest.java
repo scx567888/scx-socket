@@ -19,7 +19,7 @@ public class ScxSocketServerTest extends InitLogger {
         //创建服务器
         var scxSocketServer = new ScxSocketServer();
 
-        scxSocketServer.onClientConnect(clientContent -> {
+        scxSocketServer.onConnect(clientContent -> {
 
             clientContent.onMessage((m) -> {
                 System.out.println("客户端发来的消息 : " + m);

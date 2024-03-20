@@ -1,22 +1,19 @@
 package cool.scx.socket;
 
-import cool.scx.socket.ping_pong.PingPongOptions;
+public final class ScxSocketServerOptions extends PingPongOptions {
 
-public class ScxSocketServerOptions extends PingPongOptions {
-
-    private int removeClosedClientTimeout;
+    private int statusKeepTime;
 
     public ScxSocketServerOptions() {
-        //默认 30 分钟
-        this.removeClosedClientTimeout = 1000 * 60 * 30;
+        this.statusKeepTime = 1000 * 60 * 30; // 默认 30 分钟
     }
 
-    public int getRemoveClosedClientTimeout() {
-        return removeClosedClientTimeout;
+    public int getStatusKeepTime() {
+        return statusKeepTime;
     }
 
-    public ScxSocketServerOptions setRemoveClosedClientTimeout(int removeClosedClientTimeout) {
-        this.removeClosedClientTimeout = removeClosedClientTimeout;
+    public ScxSocketServerOptions setStatusKeepTime(int statusKeepTime) {
+        this.statusKeepTime = statusKeepTime;
         return this;
     }
 

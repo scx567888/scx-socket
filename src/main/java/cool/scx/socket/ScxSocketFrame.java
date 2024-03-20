@@ -1,11 +1,6 @@
-package cool.scx.socket.frame;
+package cool.scx.socket;
 
-import cool.scx.socket.helper.Helper;
-
-/**
- * ScxSocket 帧结构
- */
-public class ScxSocketFrame {
+public final class ScxSocketFrame {
 
     public long seq_id;
     public byte type;
@@ -25,32 +20,11 @@ public class ScxSocketFrame {
     }
 
     public static class Type {
-
-        /**
-         * 消息
-         */
         public static final byte MESSAGE = 0;
-
-        /**
-         * 响应
-         */
         public static final byte RESPONSE = 1;
-
-        /**
-         * ACK
-         */
         public static final byte ACK = 2;
-
-        /**
-         * 心跳 ping
-         */
         public static final byte PING = 3;
-
-        /**
-         * 心跳 pong
-         */
         public static final byte PONG = 4;
-
     }
 
 }

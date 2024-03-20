@@ -1,4 +1,4 @@
-package cool.scx.socket.helper;
+package cool.scx.socket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,11 +76,11 @@ public final class Helper {
     }
 
     public static <T> T fromJson(String json, Class<T> tClass) {
-        return wrap(() -> JSON_MAPPER.readValue(json, tClass));
+        return json == null ? null : wrap(() -> JSON_MAPPER.readValue(json, tClass));
     }
 
     public static <T> T fromJson(String json, TypeReference<T> valueTypeRef) {
-        return wrap(() -> JSON_MAPPER.readValue(json, valueTypeRef));
+        return json == null ? null : wrap(() -> JSON_MAPPER.readValue(json, valueTypeRef));
     }
 
 }

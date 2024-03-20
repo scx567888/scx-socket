@@ -17,34 +17,34 @@ public class ScxSocketClientTest extends InitLogger {
     @Test
     public static void test1() {
         //启动服务器
-        ScxSocketServerTest.test1();
+//        ScxSocketServerTest.test1();
 
         var webSocketClient = VERTX.createWebSocketClient();
 
         var scxSocketClient = new ScxSocketClient("ws://127.0.0.1:8990/test", webSocketClient);
 
-        //支持未连接时发送
-        scxSocketClient.sendEvent("a", new User("jack", 24));
-        scxSocketClient.sendEvent("ss", List.of(new User("jack", 24)), (s, e) -> {
-            System.out.println("服务端的响应 " + s);
-        }, new TypeReference<List<User>>() {});
+        scxSocketClient.onConnect(c -> {
 
-        scxSocketClient.send("abc");
-
-        scxSocketClient.onOpen((v) -> {
             System.out.println("onOpen");
+
+            c.sendEvent("a", new User("jack", 24));
+            c.sendEvent("ss", List.of(new User("jack", 24)), (s, e) -> {
+                System.out.println("服务端的响应 " + s);
+            }, new TypeReference<List<User>>() {});
+
+            c.send("abc");
+
+            c.onEvent("b", m -> {
+                System.out.println("服务端发送的消息 : " + m);
+            }, User.class);
+
+            for (int i = 0; i < 10; i++) {
+                int finalI = i;
+                c.sendEvent("aaa", i, (d, e) -> {
+                    System.out.println(d + "  " + finalI);
+                });
+            }
         });
-
-        scxSocketClient.onEvent("b", m -> {
-            System.out.println("服务端发送的消息 : " + m);
-        }, User.class);
-
-        for (int i = 0; i < 10; i++) {
-            int finalI = i;
-            scxSocketClient.sendEvent("aaa", i, (d, e) -> {
-                System.out.println(d + "  " + finalI);
-            });
-        }
 
         scxSocketClient.connect();
 

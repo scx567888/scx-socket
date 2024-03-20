@@ -1,4 +1,4 @@
-package cool.scx.socket.core;
+package cool.scx.socket;
 
 public class ScxSocketOptions {
 

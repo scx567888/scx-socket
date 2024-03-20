@@ -1,13 +1,10 @@
-package cool.scx.socket.sender;
+package cool.scx.socket;
 
 public class SendOptions {
 
     private boolean needAck;
-
     private int maxResendTimes;
-
     private long maxResendDelayed;
-
     private boolean giveUpIfReachMaxResendTimes;
 
     public SendOptions() {

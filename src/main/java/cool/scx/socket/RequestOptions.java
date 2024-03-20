@@ -1,8 +1,6 @@
-package cool.scx.socket.request;
+package cool.scx.socket;
 
-import cool.scx.socket.sender.SendOptions;
-
-public class RequestOptions extends SendOptions {
+public final class RequestOptions extends SendOptions {
 
     private int requestTimeout;
 
@@ -14,8 +12,9 @@ public class RequestOptions extends SendOptions {
         return requestTimeout;
     }
 
-    public void setRequestTimeout(int requestTimeout) {
+    public RequestOptions setRequestTimeout(int requestTimeout) {
         this.requestTimeout = requestTimeout;
+        return this;
     }
 
 }

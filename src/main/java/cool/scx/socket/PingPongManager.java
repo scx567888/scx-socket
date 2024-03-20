@@ -1,31 +1,28 @@
-package cool.scx.socket.ping_pong;
+package cool.scx.socket;
 
-import cool.scx.socket.core.ScxSocket;
-import cool.scx.socket.frame.ScxSocketFrame;
+
 import io.netty.util.Timeout;
 import io.vertx.core.http.WebSocketBase;
 
-import static cool.scx.socket.frame.FrameCreator.PING_FRAME;
-import static cool.scx.socket.frame.FrameCreator.PONG_FRAME;
-import static cool.scx.socket.frame.ScxSocketFrame.Type.PING;
-import static cool.scx.socket.frame.ScxSocketFrame.Type.PONG;
-import static cool.scx.socket.helper.Helper.setTimeout;
+import static cool.scx.socket.Helper.setTimeout;
+import static cool.scx.socket.ScxSocketFrame.Type.PING;
+import static cool.scx.socket.ScxSocketFrame.Type.PONG;
 import static java.lang.System.Logger.Level.DEBUG;
 
-public abstract class PingPongManager extends ScxSocket {
+abstract class PingPongManager extends EasyUseSocket {
 
     private final PingPongOptions pingPongOptions;
     private Timeout ping;
     private Timeout pingTimeout;
 
-    public PingPongManager(PingPongOptions options, String clientID) {
-        super(options, clientID);
+    public PingPongManager(WebSocketBase webSocket, String clientID, PingPongOptions options, ScxSocketStatus status) {
+        super(webSocket, clientID, options, status);
         this.pingPongOptions = options;
     }
 
-    public PingPongManager(PingPongManager pingPongManager) {
-        super(pingPongManager);
-        this.pingPongOptions = pingPongManager.pingPongOptions;
+    public PingPongManager(WebSocketBase webSocket, String clientID, PingPongOptions options) {
+        super(webSocket, clientID, options);
+        this.pingPongOptions = options;
     }
 
     private void startPingTimeout() {
@@ -68,8 +65,8 @@ public abstract class PingPongManager extends ScxSocket {
     }
 
     @Override
-    protected void start(WebSocketBase webSocket) {
-        super.start(webSocket);
+    protected void start() {
+        super.start();
         //启动心跳
         this.startPing();
         //心跳超时
@@ -86,40 +83,42 @@ public abstract class PingPongManager extends ScxSocket {
     }
 
     private void sendPing() {
-        var sendPingFuture = this.webSocket.writeTextMessage(PING_FRAME.toJson());
+        var pingFrame = status.frameCreator.createPingFrame();
+        var sendPingFuture = this.webSocket.writeTextMessage(pingFrame.toJson());
 
         sendPingFuture.onSuccess(v -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PING 成功 : {1}", clientID, PONG_FRAME.toJson());
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PING 成功 : {1}", clientID, pingFrame.toJson());
             }
 
         }).onFailure(c -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PING 失败: {1}", PONG_FRAME.toJson(), c);
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PING 失败: {1}", clientID, pingFrame.toJson(), c);
             }
 
         });
     }
 
     private void sendPong() {
-        var sendPongFuture = this.webSocket.writeTextMessage(PONG_FRAME.toJson());
+        var pongFrame = status.frameCreator.createPongFrame();
+        var sendPongFuture = this.webSocket.writeTextMessage(pongFrame.toJson());
 
         sendPongFuture.onSuccess(v -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PONG 成功 : {1}", clientID, PONG_FRAME.toJson());
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PONG 成功 : {1}", clientID, pongFrame.toJson());
             }
 
         }).onFailure(c -> {
 
             //LOGGER
             if (logger.isLoggable(DEBUG)) {
-                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PONG 失败 : {1}", clientID, PONG_FRAME.toJson(), c);
+                logger.log(DEBUG, "CLIENT_ID : {0}, 发送 PONG 失败 : {1}", clientID, pongFrame.toJson(), c);
             }
 
         });

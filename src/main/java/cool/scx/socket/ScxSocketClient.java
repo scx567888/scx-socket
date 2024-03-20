@@ -1,7 +1,6 @@
 package cool.scx.socket;
 
 import cool.scx.common.util.SingleListenerFuture;
-import cool.scx.socket.ping_pong.PingPongManager;
 import io.netty.util.Timeout;
 import io.vertx.core.http.WebSocket;
 import io.vertx.core.http.WebSocketBase;
@@ -11,24 +10,30 @@ import io.vertx.core.http.WebSocketConnectOptions;
 import java.util.function.Consumer;
 
 import static cool.scx.common.util.RandomUtils.randomUUID;
-import static cool.scx.socket.helper.Helper.createConnectOptions;
-import static cool.scx.socket.helper.Helper.setTimeout;
+import static cool.scx.socket.Helper.createConnectOptions;
+import static cool.scx.socket.Helper.setTimeout;
 import static java.lang.System.Logger.Level.DEBUG;
+import static java.lang.System.getLogger;
 
-public final class ScxSocketClient extends PingPongManager {
+public final class ScxSocketClient {
 
-    private final WebSocketConnectOptions connectOptions;
-    private final WebSocketClient webSocketClient;
-    private final ScxSocketClientOptions clientOptions;
-    private Timeout reconnectTimeout;
+    private static final System.Logger logger = getLogger(ScxSocketClient.class.getName());
+
+    final WebSocketConnectOptions connectOptions;
+    final WebSocketClient webSocketClient;
+    final String clientID;
+    final ScxSocketClientOptions options;
+
+    private ScxClientSocket clientSocket;
+    private Consumer<ScxClientSocket> onConnect;
     private SingleListenerFuture<WebSocket> connectFuture;
-    private Consumer<Void> onOpen;
+    private Timeout reconnectTimeout;
 
-    public ScxSocketClient(String uri, WebSocketClient webSocketClient, String clientID, ScxSocketClientOptions clientOptions) {
-        super(clientOptions, clientID);
-        this.clientOptions = clientOptions;
+    public ScxSocketClient(String uri, WebSocketClient webSocketClient, String clientID, ScxSocketClientOptions options) {
+        this.connectOptions = createConnectOptions(uri, clientID);
         this.webSocketClient = webSocketClient;
-        this.connectOptions = createConnectOptions(uri, this.clientID);
+        this.clientID = clientID;
+        this.options = options;
     }
 
     public ScxSocketClient(String uri, WebSocketClient webSocketClient, ScxSocketClientOptions options) {
@@ -43,24 +48,13 @@ public final class ScxSocketClient extends PingPongManager {
         this(uri, webSocketClient, randomUUID(), new ScxSocketClientOptions());
     }
 
-    private void removeConnectFuture() {
-        if (this.connectFuture != null) {
-            //只有当未完成的时候才设置
-            if (!this.connectFuture.isComplete()) {
-                this.connectFuture.onSuccess(WebSocketBase::close).onFailure(null);
-            }
-            this.connectFuture = null;
-        }
+    public void onConnect(Consumer<ScxClientSocket> onConnect) {
+        this.onConnect = onConnect;
     }
 
-    public void onOpen(Consumer<Void> onOpen) {
-        this.onOpen = onOpen;
-    }
-
-    private void cancelReconnect() {
-        if (this.reconnectTimeout != null) {
-            this.reconnectTimeout.cancel();
-            this.reconnectTimeout = null;
+    private void _callOnConnect(ScxClientSocket clientConnect) {
+        if (this.onConnect != null) {
+            this.onConnect.accept(clientConnect);
         }
     }
 
@@ -70,75 +64,53 @@ public final class ScxSocketClient extends PingPongManager {
             return;
         }
         //关闭上一次连接
-        this.close();
+        this._closeOldSocket();
+        //创建连接
         this.connectFuture = new SingleListenerFuture<>(webSocketClient.connect(connectOptions));
         this.connectFuture.onSuccess((webSocket) -> {
-            this.start(webSocket);
-            this.doOpen();
-        }).onFailure((v) -> this.reconnect());
+
+            //如果存在旧的 则使用旧的 status
+            this.clientSocket = clientSocket != null ?
+                    new ScxClientSocket(webSocket, clientID, this, clientSocket.status) :
+                    new ScxClientSocket(webSocket, clientID, this);
+
+            this.clientSocket.start();
+            this._callOnConnect(clientSocket);
+        }).onFailure(this::reconnect);
     }
 
-    private void doOpen() {
-        callOnOpen(null);
-    }
-
-    @Override
-    protected void doClose(Void unused) {
-        super.doClose(unused);
-        this.connect();
-    }
-
-    @Override
-    protected void doError(Throwable e) {
-        super.doError(e);
-        this.connect();
-    }
-
-    private void reconnect() {
+    void reconnect(Throwable e) {
         //如果当前已经存在一个重连进程 则不进行重连
         if (this.reconnectTimeout != null) {
             return;
         }
-        logger.log(DEBUG, "WebSocket 重连中... ");
+        logger.log(DEBUG, "WebSocket 重连中... CLIENT_ID : {0}", clientID);
         this.reconnectTimeout = setTimeout(() -> {  //没连接上会一直重连，设置延迟为5000毫秒避免请求过多
             this.reconnectTimeout = null;
             this.connect();
-        }, clientOptions.getReconnectTimeout());
+        }, options.getReconnectTimeout());
     }
 
-    @Override
-    public void close() {
-        removeConnectFuture();
-        cancelReconnect();
-        resetCloseOrErrorBind();
-        super.close();
-    }
-
-    /**
-     * 重置 关闭和 错误的 handler
-     */
-    private void resetCloseOrErrorBind() {
-        if (this.webSocket != null && !this.webSocket.isClosed()) {
-            this.webSocket.closeHandler(null);
-            this.webSocket.exceptionHandler(null);
+    void cancelReconnect() {
+        if (this.reconnectTimeout != null) {
+            this.reconnectTimeout.cancel();
+            this.reconnectTimeout = null;
         }
     }
 
-    @Override
-    protected void doPingTimeout() {
-        //心跳失败直接重连
-        this.connect();
-    }
-
-    private void callOnOpen(Void v) {
-        if (this.onOpen != null) {
-            this.onOpen.accept(v);
+    void removeConnectFuture() {
+        if (this.connectFuture != null) {
+            //只有当未完成的时候才设置
+            if (!this.connectFuture.isComplete()) {
+                this.connectFuture.onSuccess(WebSocketBase::close).onFailure(null);
+            }
+            this.connectFuture = null;
         }
     }
 
-    private void callOnOpenAsync(Void v) {
-        if (this.onOpen != null) {
-            Thread.ofVirtual().start(() -> this.onOpen.accept(v));
+    private void _closeOldSocket() {
+        if (this.clientSocket != null) {
+            this.clientSocket.close();
         }
     }
 
