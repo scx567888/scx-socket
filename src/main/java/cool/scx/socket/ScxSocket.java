@@ -250,14 +250,14 @@ public class ScxSocket {
     private void _callOnClose(Void v) {
         if (this.onClose != null) {
             //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
-            Thread.ofVirtual().name("scx-socket-call-on-close").start(() ->this.onClose.accept(v));
+            Thread.ofVirtual().name("scx-socket-call-on-close").start(() -> this.onClose.accept(v));
         }
     }
 
     private void _callOnError(Throwable e) {
         if (this.onError != null) {
             //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
-            Thread.ofVirtual().name("scx-socket-call-on-error").start(() ->this.onError.accept(e));
+            Thread.ofVirtual().name("scx-socket-call-on-error").start(() -> this.onError.accept(e));
         }
     }
 
