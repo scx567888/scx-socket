@@ -18,11 +18,11 @@ public class EasyUseSocket extends ScxSocket {
     private static final SendOptions DEFAULT_SEND_OPTIONS = new SendOptions();
     private static final RequestOptions DEFAULT_REQUEST_OPTIONS = new RequestOptions();
 
-    public EasyUseSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options, ScxSocketStatus status) {
+    EasyUseSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options, ScxSocketStatus status) {
         super(webSocket, clientID, options, status);
     }
 
-    public EasyUseSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options) {
+    EasyUseSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options) {
         super(webSocket, clientID, options);
     }
 

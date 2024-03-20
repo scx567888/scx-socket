@@ -32,11 +32,6 @@ public final class ScxClientSocket extends PingPongManager {
     }
 
     @Override
-    protected void start() {
-        super.start();
-    }
-
-    @Override
     public void close() {
         this.socketClient.removeConnectFuture();
         this.socketClient.cancelReconnect();
