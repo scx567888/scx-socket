@@ -38,6 +38,7 @@ public final class ScxSocketServer {
         var clientID = getClientID(serverWebSocket);
         if (clientID == null) {
             serverWebSocket.reject(400);
+            return;
         }
 
         var serverSocket = serverSockets.compute(clientID, (k, old) -> {
