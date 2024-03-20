@@ -28,7 +28,7 @@ public class ScxSocket {
     private Consumer<Void> onClose;
     private Consumer<Throwable> onError;
 
-    public ScxSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options, ScxSocketStatus status) {
+    ScxSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options, ScxSocketStatus status) {
         this.webSocket = webSocket;
         this.clientID = clientID;
         this.options = options;
@@ -39,7 +39,7 @@ public class ScxSocket {
         this.onError = null;
     }
 
-    public ScxSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options) {
+    ScxSocket(WebSocketBase webSocket, String clientID, ScxSocketOptions options) {
         this(webSocket, clientID, options, new ScxSocketStatus(options));
     }
 
@@ -205,11 +205,19 @@ public class ScxSocket {
             var closeFuture = this.webSocket.close();
 
             closeFuture.onSuccess(c -> {
-                //todo
-                System.err.println("关闭成功 !!!");
+
+                //LOGGER
+                if (logger.isLoggable(DEBUG)) {
+                    logger.log(DEBUG, "CLIENT_ID : {0}, 关闭成功", clientID);
+                }
+
             }).onFailure(e -> {
-                //todo
-                e.printStackTrace();
+
+                //LOGGER
+                if (logger.isLoggable(DEBUG)) {
+                    logger.log(DEBUG, "CLIENT_ID : {0}, 关闭失败", clientID, e);
+                }
+
             });
         }
     }

@@ -25,7 +25,6 @@ final class FrameSender {
     }
 
     public void startAllSendTask(ScxSocket scxSocket) {
-        //todo 循环时移除是否有影响?
         for (var value : this.sendTaskMap.values()) {
             value.start(scxSocket);
         }

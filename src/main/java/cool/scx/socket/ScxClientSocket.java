@@ -48,7 +48,7 @@ public final class ScxClientSocket extends PingPongManager {
      * 重置 关闭和 错误的 handler
      */
     private void resetCloseOrErrorBind() {
-        if (this.webSocket != null && !this.webSocket.isClosed()) {
+        if (!this.webSocket.isClosed()) {
             this.webSocket.closeHandler(null);
             this.webSocket.exceptionHandler(null);
         }
