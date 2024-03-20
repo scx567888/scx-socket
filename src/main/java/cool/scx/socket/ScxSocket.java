@@ -242,30 +242,36 @@ public class ScxSocket {
 
     private void _callOnMessage(String message) {
         if (this.onMessage != null) {
-            this.onMessage.accept(message);
+            //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
+            Thread.ofVirtual().name("scx-socket-call-on-message").start(() -> this.onMessage.accept(message));
         }
     }
 
     private void _callOnClose(Void v) {
         if (this.onClose != null) {
-            this.onClose.accept(v);
+            //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
+            Thread.ofVirtual().name("scx-socket-call-on-close").start(() ->this.onClose.accept(v));
         }
     }
 
     private void _callOnError(Throwable e) {
         if (this.onError != null) {
-            this.onError.accept(e);
+            //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
+            Thread.ofVirtual().name("scx-socket-call-on-error").start(() ->this.onError.accept(e));
         }
     }
 
     private void _callOnEvent(ScxSocketFrame socketFrame) {
         var eventHandler = this.eventHandlerMap.get(socketFrame.event_name);
         if (eventHandler != null) {
-            switch (eventHandler.type) {
-                case 0 -> this._callOnEvent0(eventHandler.event0(), socketFrame);
-                case 1 -> this._callOnEvent1(eventHandler.event1(), socketFrame);
-                case 2 -> this._callOnEvent2(eventHandler.event2(), socketFrame);
-            }
+            //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
+            Thread.ofVirtual().name("scx-socket-call-on-event").start(() -> {
+                switch (eventHandler.type) {
+                    case 0 -> this._callOnEvent0(eventHandler.event0(), socketFrame);
+                    case 1 -> this._callOnEvent1(eventHandler.event1(), socketFrame);
+                    case 2 -> this._callOnEvent2(eventHandler.event2(), socketFrame);
+                }
+            });
         }
     }
 

@@ -30,7 +30,8 @@ public final class ScxSocketServer {
 
     private void _callOnConnect(ScxServerSocket serverSocket) {
         if (this.onConnect != null) {
-            this.onConnect.accept(serverSocket);
+            //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
+            Thread.ofVirtual().name("scx-socket-server-call-on-connect").start(() -> this.onConnect.accept(serverSocket));
         }
     }
 

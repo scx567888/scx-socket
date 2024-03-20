@@ -52,9 +52,10 @@ public final class ScxSocketClient {
         this.onConnect = onConnect;
     }
 
-    private void _callOnConnect(ScxClientSocket clientConnect) {
+    private void _callOnConnect(ScxClientSocket clientSocket) {
         if (this.onConnect != null) {
-            this.onConnect.accept(clientConnect);
+            //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
+            Thread.ofVirtual().name("scx-socket-client-call-on-connect").start(() -> this.onConnect.accept(clientSocket));
         }
     }
 
