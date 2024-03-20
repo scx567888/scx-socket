@@ -69,19 +69,19 @@ public class YourServer {
         var scxSocketServer = new ScxSocketServer();
 
         //2, 添加客户端连接事件
-        scxSocketServer.onClientConnect(clientContent -> {
+        scxSocketServer.onConnect(serverSocket -> {
 
-            clientContent.send("Hello ScxSocketClient !!!");
+            serverSocket.send("Hello ScxSocketClient !!!");
 
-            clientContent.onMessage((m) -> {
+            serverSocket.onMessage((m) -> {
                 System.out.println("onMessage : " + m);
             });
 
-            clientContent.onClose(c -> {
+            serverSocket.onClose(c -> {
                 System.out.println("onClose");
             });
 
-            clientContent.onError(e -> {
+            serverSocket.onError(e -> {
                 System.out.println("onError");
             });
 
@@ -112,20 +112,22 @@ public class YourClient {
         var scxSocketClient = new ScxSocketClient("ws://127.0.0.1:8990", vertxWebSocketClient);
 
         //2, 添加事件
-        scxSocketClient.onOpen(clientContent -> {
-            scxSocketClient.send("Hello ScxSocketServer !!!");
-        });
+        scxSocketClient.onConnect(clientSocket -> {
 
-        scxSocketClient.onMessage((m) -> {
-            System.out.println("onMessage : " + m);
-        });
+            clientSocket.send("Hello ScxSocketServer !!!");
 
-        scxSocketClient.onClose(c -> {
-            System.out.println("onClose");
-        });
+            clientSocket.onMessage((m) -> {
+                System.out.println("onMessage : " + m);
+            });
 
-        scxSocketClient.onError(e -> {
-            System.out.println("onError");
+            clientSocket.onClose(c -> {
+                System.out.println("onClose");
+            });
+
+            clientSocket.onError(e -> {
+                System.out.println("onError");
+            });
+
         });
 
         //3, 连接服务端
