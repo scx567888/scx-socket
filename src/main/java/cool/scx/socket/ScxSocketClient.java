@@ -19,9 +19,9 @@ public final class ScxSocketClient {
 
     private static final System.Logger logger = getLogger(ScxSocketClient.class.getName());
 
-    private final WebSocketConnectOptions connectOptions;
-    private final WebSocketClient webSocketClient;
-    private final String clientID;
+    final WebSocketConnectOptions connectOptions;
+    final WebSocketClient webSocketClient;
+    final String clientID;
     final ScxSocketClientOptions options;
 
     private ScxClientSocket clientSocket;
