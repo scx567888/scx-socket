@@ -25,10 +25,11 @@ public class ScxSocketServerTest extends InitLogger {
                 System.out.println("客户端发来的消息 : " + m);
             });
 
-            clientContent.onEvent("a", (m) -> {
+            clientContent.onEvent("a", (r) -> {
+                var m = r.payload(new TypeReference<User>() {});
                 System.out.println("客户端发来的事件 : " + m);
                 clientContent.sendEvent("b", m);
-            }, new TypeReference<User>() {});
+            });
 
             clientContent.onClose(c -> {
                 System.out.println("close");
@@ -38,25 +39,21 @@ public class ScxSocketServerTest extends InitLogger {
                 e.printStackTrace();
             });
 
-            //响应方法一 直接返回 
-            clientContent.onEvent("aaa", (c) -> {
-                return c + "🙄";
+            //响应方法 
+            clientContent.onEvent("aaa", (r) -> {
+                r.response(r.payload() + "🙄");
             });
 
             //相同事件名称 会覆盖
-            //响应方法二 通过第二个 request 参数 进行回调
-            clientContent.onEvent("aaa", (c, request) -> {
-                request.response(c + "😆");
+            clientContent.onEvent("aaa", (r) -> {
+                r.response(r.payload() + "😆");
             });
 
-            clientContent.onEvent("aaa", (c, request) -> {
-                request.response(c + "😆");
-            });
-
-            clientContent.onEvent("ss", (c, request) -> {
+            clientContent.onEvent("ss", (r) -> {
+                var c = r.payload(new TypeReference<List<User>>() {});
                 c.add(new User("Tom", 88));
-                request.response(c);
-            }, new TypeReference<List<User>>() {});
+                r.response(c);
+            });
 
         });
 
