@@ -21,7 +21,7 @@ public class ScxSocket {
     final ScxSocketOptions options;
     final ScxSocketStatus status;
 
-    private final ConcurrentMap<String, EventHandler> onEventMap;
+    private final ConcurrentMap<String, Consumer<ScxSocketRequest>> onEventMap;
     private Consumer<String> onMessage;
     private Consumer<Void> onClose;
     private Consumer<Throwable> onError;
@@ -113,7 +113,7 @@ public class ScxSocket {
         this.webSocket.exceptionHandler(this::doError);
     }
 
-    public final void onEvent(String eventName, EventHandler onEvent) {
+    public final void onEvent(String eventName, Consumer<ScxSocketRequest> onEvent) {
         this.onEventMap.put(eventName, onEvent);
     }
 
@@ -271,7 +271,7 @@ public class ScxSocket {
             //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
             Thread.ofVirtual().name("scx-socket-call-on-event").start(() -> {
                 var socketRequest = new ScxSocketRequest(this, socketFrame);
-                onEvent.handle(socketRequest);
+                onEvent.accept(socketRequest);
             });
         }
     }
