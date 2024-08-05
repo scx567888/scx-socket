@@ -28,20 +28,26 @@ public class ScxSocketClientTest extends InitLogger {
             System.out.println("onOpen");
 
             c.sendEvent("a", new User("jack", 24));
-            c.sendEvent("ss", List.of(new User("jack", 24)), (s, e) -> {
-                System.out.println("服务端的响应 " + s);
-            }, new TypeReference<List<User>>() {});
+            c.sendEvent("ss", List.of(new User("jack", 24)), r -> {
+                if (r.isSuccess()) {
+                    var s = r.payload(new TypeReference<List<User>>() {});
+                    System.out.println("服务端的响应 " + s);
+                } else {
+                    System.out.println("服务端的响应超时 ");
+                }
+            });
 
             c.send("abc");
 
-            c.onEvent("b", m -> {
+            c.onEvent("b", r -> {
+                var m = r.payload(new TypeReference<User>() {});
                 System.out.println("服务端发送的消息 : " + m);
-            }, new TypeReference<User>() {});
+            });
 
             for (int i = 0; i < 10; i++) {
                 int finalI = i;
-                c.sendEvent("aaa", i, (d, e) -> {
-                    System.out.println(d + "  " + finalI);
+                c.sendEvent("aaa", i, r -> {
+                    System.out.println(r.payload() + "  " + finalI);
                 });
             }
         });

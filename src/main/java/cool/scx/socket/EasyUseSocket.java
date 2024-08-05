@@ -3,12 +3,10 @@ package cool.scx.socket;
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.vertx.core.http.WebSocketBase;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static cool.scx.socket.Helper.fromJson;
 import static cool.scx.socket.Helper.toJson;
 
 /**
@@ -43,10 +41,6 @@ public class EasyUseSocket extends ScxSocket {
         sendEvent(eventName, null, DEFAULT_SEND_OPTIONS);
     }
 
-    public final void sendEvent(String eventName, String data) {
-        sendEvent(eventName, data, DEFAULT_SEND_OPTIONS);
-    }
-
     public final void sendEvent(String eventName, Object data) {
         sendEvent(eventName, toJson(data), DEFAULT_SEND_OPTIONS);
     }
@@ -55,80 +49,58 @@ public class EasyUseSocket extends ScxSocket {
         sendEvent(eventName, toJson(data), options);
     }
 
-    public final void sendEvent(String eventName, BiConsumer<String, Throwable> responseCallback) {
+    public final void sendEvent(String eventName, Consumer<ScxSocketResponse> responseCallback) {
         sendEvent(eventName, null, responseCallback, DEFAULT_REQUEST_OPTIONS);
     }
 
-    public final void sendEvent(String eventName, BiConsumer<String, Throwable> responseCallback, RequestOptions options) {
+    public final void sendEvent(String eventName, Consumer<ScxSocketResponse> responseCallback, RequestOptions options) {
         sendEvent(eventName, null, responseCallback, options);
     }
 
-    public final void sendEvent(String eventName, String data, BiConsumer<String, Throwable> responseCallback) {
-        sendEvent(eventName, data, responseCallback, DEFAULT_REQUEST_OPTIONS);
-    }
-
-    public final void sendEvent(String eventName, Object data, BiConsumer<String, Throwable> responseCallback) {
+    public final void sendEvent(String eventName, Object data, Consumer<ScxSocketResponse> responseCallback) {
         sendEvent(eventName, toJson(data), responseCallback, DEFAULT_REQUEST_OPTIONS);
     }
 
-    public final void sendEvent(String eventName, Object data, BiConsumer<String, Throwable> responseCallback, RequestOptions options) {
+    public final void sendEvent(String eventName, Object data, Consumer<ScxSocketResponse> responseCallback, RequestOptions options) {
         sendEvent(eventName, toJson(data), responseCallback, options);
     }
 
-    public final <T> void sendEvent(String eventName, BiConsumer<T, Throwable> responseCallback, TypeReference<T> tClass) {
-        sendEvent(eventName, null, (s, e) -> responseCallback.accept(fromJson(s, tClass), e), DEFAULT_REQUEST_OPTIONS);
+    //************************ 方便直接使用 实例::方法 的形式调用 ***************************
+
+    public final void onEvent(String eventName, Runnable onEvent) {
+        this.onEvent(eventName, r -> {
+            onEvent.run();
+            if (r.socketFrame().need_response) {
+                r.response(null);
+            }
+        });
     }
 
-    public final <T> void sendEvent(String eventName, BiConsumer<T, Throwable> responseCallback, RequestOptions options, TypeReference<T> tClass) {
-        sendEvent(eventName, null, (s, e) -> responseCallback.accept(fromJson(s, tClass), e), options);
+    public final <T> void onEvent(String eventName, Consumer<T> onEvent, TypeReference<T> valueTypeRef) {
+        this.onEvent(eventName, r -> {
+            onEvent.accept(r.payload(valueTypeRef));
+            if (r.socketFrame().need_response) {
+                r.response(null);
+            }
+        });
     }
 
-    public final <T> void sendEvent(String eventName, Object data, BiConsumer<T, Throwable> responseCallback, TypeReference<T> tClass) {
-        sendEvent(eventName, toJson(data), (s, e) -> responseCallback.accept(fromJson(s, tClass), e), DEFAULT_REQUEST_OPTIONS);
-    }
-
-    public final <T> void sendEvent(String eventName, Object data, BiConsumer<T, Throwable> responseCallback, RequestOptions options, TypeReference<T> tClass) {
-        sendEvent(eventName, toJson(data), (s, e) -> responseCallback.accept(fromJson(s, tClass), e), options);
-    }
-
-    public final <T> void onEvent(String eventName, Consumer<T> onEvent, TypeReference<T> tClass) {
-        this.onEvent(eventName, (Consumer<String>) s -> onEvent.accept(fromJson(s, tClass)));
-    }
-
-    public final void onEvent(String eventName, Supplier<?> onEvent, TypeReference<?> tClass) {
-        this.onEvent(eventName, () -> {
+    public final void onEvent(String eventName, Supplier<?> onEvent) {
+        this.onEvent(eventName, r -> {
             var data = onEvent.get();
-            return data instanceof String str ? str : toJson(data);
+            if (r.socketFrame().need_response) {
+                r.response(toJson(data));
+            }
         });
     }
 
-    public final <T> void onEvent(String eventName, Function<T, ?> onEvent, TypeReference<T> tClass) {
-        this.onEvent(eventName, s -> {
-            var data = onEvent.apply(fromJson(s, tClass));
-            return data instanceof String str ? str : toJson(data);
+    public final <T> void onEvent(String eventName, Function<T, ?> onEvent, TypeReference<T> valueTypeRef) {
+        this.onEvent(eventName, r -> {
+            var data = onEvent.apply(r.payload(valueTypeRef));
+            if (r.socketFrame().need_response) {
+                r.response(toJson(data));
+            }
         });
-    }
-
-    public final <T> void onEvent(String eventName, BiConsumer<T, TypeRequest> onEvent, TypeReference<T> tClass) {
-        this.onEvent(eventName, (s, r) -> onEvent.accept(fromJson(s, tClass), new TypeRequest(r)));
-    }
-
-    public static class TypeRequest {
-
-        private final ScxSocketRequest request;
-
-        public TypeRequest(ScxSocketRequest r) {
-            this.request = r;
-        }
-
-        public void response(String payload) {
-            request.response(payload);
-        }
-
-        public void response(Object payload) {
-            request.response(toJson(payload));
-        }
-
     }
 
 }

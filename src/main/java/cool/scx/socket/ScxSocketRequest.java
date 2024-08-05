@@ -1,15 +1,24 @@
 package cool.scx.socket;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import static cool.scx.socket.Helper.fromJson;
+import static cool.scx.socket.Helper.toJson;
+
 public final class ScxSocketRequest {
 
     private final ScxSocket scxSocket;
-    private final long ack_id;
+    private final ScxSocketFrame socketFrame;
     private boolean alreadyResponse;
 
-    public ScxSocketRequest(ScxSocket scxSocket, long ack_id) {
+    public ScxSocketRequest(ScxSocket scxSocket, ScxSocketFrame socketFrame) {
         this.scxSocket = scxSocket;
-        this.ack_id = ack_id;
+        this.socketFrame = socketFrame;
         this.alreadyResponse = false;
+    }
+
+    ScxSocketFrame socketFrame() {
+        return socketFrame;
     }
 
     public void response(String payload) {
@@ -17,8 +26,20 @@ public final class ScxSocketRequest {
             throw new UnsupportedOperationException("已经响应过 !!!");
         } else {
             alreadyResponse = true;
-            scxSocket.sendResponse(ack_id, payload);
+            scxSocket.sendResponse(socketFrame.seq_id, payload);
         }
+    }
+
+    public void response(Object payload) {
+        this.response(toJson(payload));
+    }
+
+    public String payload() {
+        return socketFrame.payload;
+    }
+
+    public <T> T payload(TypeReference<T> valueTypeRef) {
+        return fromJson(payload(), valueTypeRef);
     }
 
 }
