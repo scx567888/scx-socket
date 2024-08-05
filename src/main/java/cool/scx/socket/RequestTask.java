@@ -2,17 +2,17 @@ package cool.scx.socket;
 
 import io.netty.util.Timeout;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 final class RequestTask {
 
-    private final BiConsumer<String, Throwable> responseCallback;
+    private final Consumer<ScxSocketResponse> responseCallback;
     private final RequestManager requestManager;
     private final RequestOptions options;
     private final long seq_id;
     private Timeout failTimeout;
 
-    public RequestTask(BiConsumer<String, Throwable> responseCallback, RequestManager requestManager, RequestOptions options, long seqId) {
+    public RequestTask(Consumer<ScxSocketResponse> responseCallback, RequestManager requestManager, RequestOptions options, long seqId) {
         this.responseCallback = responseCallback;
         this.requestManager = requestManager;
         this.options = options;
@@ -26,12 +26,12 @@ final class RequestTask {
 
     public void success(String payload) {
         this.clear();
-        this.responseCallback.accept(payload, null);
+        this.responseCallback.accept(new ScxSocketResponse(payload));
     }
 
     public void fail() {
         this.clear();
-        this.responseCallback.accept(null, new RuntimeException("超时"));
+        this.responseCallback.accept(new ScxSocketResponse(new RuntimeException("超时")));
     }
 
     public void cancelFail() {

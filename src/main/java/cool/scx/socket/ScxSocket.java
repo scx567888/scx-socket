@@ -4,7 +4,6 @@ import io.vertx.core.http.WebSocketBase;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static cool.scx.common.util.StringUtils.isBlank;
@@ -62,7 +61,7 @@ public class ScxSocket {
         send(status.frameCreator.createEventFrame(eventName, data, options), options);
     }
 
-    public final void sendEvent(String eventName, String data, BiConsumer<String, Throwable> responseCallback, RequestOptions options) {
+    public final void sendEvent(String eventName, String data, Consumer<ScxSocketResponse> responseCallback, RequestOptions options) {
         var eventFrame = status.frameCreator.createRequestFrame(eventName, data, options);
         status.requestManager.setResponseCallback(eventFrame, responseCallback, options);
         send(eventFrame, options);
