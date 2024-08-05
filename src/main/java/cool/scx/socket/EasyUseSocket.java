@@ -75,7 +75,7 @@ public class EasyUseSocket extends ScxSocket {
 
     //************************ 方便直接使用 实例::方法 的形式调用 ***************************
 
-    public final <T> void onEvent(String eventName, Runnable onEvent) {
+    public final void onEvent(String eventName, Runnable onEvent) {
         this.onEvent(eventName, r -> {
             onEvent.run();
             if (r.socketFrame().need_response) {
