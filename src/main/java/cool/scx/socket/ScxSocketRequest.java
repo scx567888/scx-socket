@@ -17,6 +17,10 @@ public final class ScxSocketRequest {
         this.alreadyResponse = false;
     }
 
+    ScxSocketFrame socketFrame() {
+        return socketFrame;
+    }
+
     public void response(String payload) {
         if (alreadyResponse) {
             throw new UnsupportedOperationException("已经响应过 !!!");
