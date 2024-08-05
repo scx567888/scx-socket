@@ -75,8 +75,8 @@ public class EasyUseSocket extends ScxSocket {
 
     //************************ 方便直接使用 实例::方法 的形式调用 ***************************
 
-    public final void onEvent(String eventName, Runnable onEvent) {
-        this.onEvent(eventName, (EventHandler) r -> {
+    public final <T> void onEvent(String eventName, Runnable onEvent) {
+        this.onEvent(eventName, r -> {
             onEvent.run();
             if (r.socketFrame().need_response) {
                 r.response(null);
@@ -84,58 +84,29 @@ public class EasyUseSocket extends ScxSocket {
         });
     }
 
-    public final void onEvent(String eventName, Consumer<String> onEvent) {
-        this.onEvent(eventName, (EventHandler) r -> {
-            onEvent.accept(r.payload());
+    public final <T> void onEvent(String eventName, Consumer<T> onEvent, TypeReference<T> valueTypeRef) {
+        this.onEvent(eventName, r -> {
+            onEvent.accept(r.payload(valueTypeRef));
             if (r.socketFrame().need_response) {
                 r.response(null);
             }
         });
     }
 
-    public final void onEvent(String eventName, Supplier<String> onEvent) {
-        this.onEvent(eventName, (EventHandler) r -> {
+    public final void onEvent(String eventName, Supplier<?> onEvent) {
+        this.onEvent(eventName, r -> {
             var data = onEvent.get();
             if (r.socketFrame().need_response) {
-                r.response(data);
+                r.response(toJson(data));
             }
         });
     }
 
-    public final void onEvent(String eventName, Function<String, String> onEvent) {
-        this.onEvent(eventName, (EventHandler) r -> {
-            var data = onEvent.apply(r.payload());
+    public final <T> void onEvent(String eventName, Function<T, ?> onEvent, TypeReference<T> valueTypeRef) {
+        this.onEvent(eventName, r -> {
+            var data = onEvent.apply(r.payload(valueTypeRef));
             if (r.socketFrame().need_response) {
-                r.response(data);
-            }
-        });
-    }
-
-    public final <T> void onEvent(String eventName, Consumer<T> onEvent, TypeReference<T> tClass) {
-        this.onEvent(eventName, (EventHandler) r -> {
-            onEvent.accept(r.payload(tClass));
-            if (r.socketFrame().need_response) {
-                r.response(null);
-            }
-        });
-    }
-
-    public final void onEvent(String eventName, Supplier<?> onEvent, TypeReference<?> tClass) {
-        this.onEvent(eventName, (EventHandler) r -> {
-            var data = onEvent.get();
-            var p = data instanceof String str ? str : toJson(data);
-            if (r.socketFrame().need_response) {
-                r.response(p);
-            }
-        });
-    }
-
-    public final <T> void onEvent(String eventName, Function<T, ?> onEvent, TypeReference<T> tClass) {
-        this.onEvent(eventName, (EventHandler) r -> {
-            var data = onEvent.apply(r.payload(tClass));
-            var p = data instanceof String str ? str : toJson(data);
-            if (r.socketFrame().need_response) {
-                r.response(p);
+                r.response(toJson(data));
             }
         });
     }
