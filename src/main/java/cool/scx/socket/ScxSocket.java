@@ -25,7 +25,7 @@ public class ScxSocket {
     final ScxSocketOptions options;
     final ScxSocketStatus status;
 
-    private final ConcurrentMap<String, EventHandler> eventHandlerMap;
+    private final ConcurrentMap<String, Consumer<ScxSocketRequest>> eventHandlerMap;
     private Consumer<String> onMessage;
     private Consumer<Void> onClose;
     private Consumer<Throwable> onError;
@@ -117,28 +117,8 @@ public class ScxSocket {
         this.webSocket.exceptionHandler(this::doError);
     }
 
-    public final void onEvent(String eventName, Runnable onEvent) {
-        _onEvent(eventName, new RunnableEventHandler(onEvent));
-    }
-
-    public final void onEvent(String eventName, Consumer<String> onEvent) {
-        _onEvent(eventName, new ConsumerEventHandler(onEvent));
-    }
-
-    public final void onEvent(String eventName, Supplier<String> onEvent) {
-        _onEvent(eventName, new SupplierEventHandler(onEvent));
-    }
-
-    public final void onEvent(String eventName, Function<String, String> onEvent) {
-        _onEvent(eventName, new FunctionEventHandler(onEvent));
-    }
-
-    public final void onEvent(String eventName, BiConsumer<String, ScxSocketRequest> onEvent) {
-        _onEvent(eventName, new BiConsumerEventHandler(onEvent));
-    }
-
-    public final void _onEvent(String eventName, EventHandler eventHandler) {
-        this.eventHandlerMap.put(eventName, eventHandler);
+    public final void onEvent(String eventName, Consumer<ScxSocketRequest> onEvent) {
+        this.eventHandlerMap.put(eventName, onEvent);
     }
 
     public final void removeEvent(String eventName) {
@@ -294,8 +274,8 @@ public class ScxSocket {
         if (eventHandler != null) {
             //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
             Thread.ofVirtual().name("scx-socket-call-on-event").start(() -> {
-                var socketRequest = new ScxSocketRequest(this, socketFrame.seq_id);
-                eventHandler.handle(socketFrame, socketRequest);
+                var socketRequest = new ScxSocketRequest(this, socketFrame);
+                eventHandler.accept(socketRequest);
             });
         }
     }
