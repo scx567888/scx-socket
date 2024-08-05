@@ -55,80 +55,24 @@ public class EasyUseSocket extends ScxSocket {
         sendEvent(eventName, toJson(data), options);
     }
 
-    public final void sendEvent(String eventName, BiConsumer<String, Throwable> responseCallback) {
+    public final void sendEvent(String eventName, Consumer<ScxSocketResponse> responseCallback) {
         sendEvent(eventName, null, responseCallback, DEFAULT_REQUEST_OPTIONS);
     }
 
-    public final void sendEvent(String eventName, BiConsumer<String, Throwable> responseCallback, RequestOptions options) {
+    public final void sendEvent(String eventName, Consumer<ScxSocketResponse> responseCallback, RequestOptions options) {
         sendEvent(eventName, null, responseCallback, options);
     }
 
-    public final void sendEvent(String eventName, String data, BiConsumer<String, Throwable> responseCallback) {
+    public final void sendEvent(String eventName, String data, Consumer<ScxSocketResponse> responseCallback) {
         sendEvent(eventName, data, responseCallback, DEFAULT_REQUEST_OPTIONS);
     }
 
-    public final void sendEvent(String eventName, Object data, BiConsumer<String, Throwable> responseCallback) {
+    public final void sendEvent(String eventName, Object data, Consumer<ScxSocketResponse> responseCallback) {
         sendEvent(eventName, toJson(data), responseCallback, DEFAULT_REQUEST_OPTIONS);
     }
 
-    public final void sendEvent(String eventName, Object data, BiConsumer<String, Throwable> responseCallback, RequestOptions options) {
+    public final void sendEvent(String eventName, Object data, Consumer<ScxSocketResponse> responseCallback, RequestOptions options) {
         sendEvent(eventName, toJson(data), responseCallback, options);
-    }
-
-    public final <T> void sendEvent(String eventName, BiConsumer<T, Throwable> responseCallback, TypeReference<T> tClass) {
-        sendEvent(eventName, null, (s, e) -> responseCallback.accept(fromJson(s, tClass), e), DEFAULT_REQUEST_OPTIONS);
-    }
-
-    public final <T> void sendEvent(String eventName, BiConsumer<T, Throwable> responseCallback, RequestOptions options, TypeReference<T> tClass) {
-        sendEvent(eventName, null, (s, e) -> responseCallback.accept(fromJson(s, tClass), e), options);
-    }
-
-    public final <T> void sendEvent(String eventName, Object data, BiConsumer<T, Throwable> responseCallback, TypeReference<T> tClass) {
-        sendEvent(eventName, toJson(data), (s, e) -> responseCallback.accept(fromJson(s, tClass), e), DEFAULT_REQUEST_OPTIONS);
-    }
-
-    public final <T> void sendEvent(String eventName, Object data, BiConsumer<T, Throwable> responseCallback, RequestOptions options, TypeReference<T> tClass) {
-        sendEvent(eventName, toJson(data), (s, e) -> responseCallback.accept(fromJson(s, tClass), e), options);
-    }
-
-    public final <T> void onEvent(String eventName, Consumer<T> onEvent, TypeReference<T> tClass) {
-        this.onEvent(eventName, (Consumer<String>) s -> onEvent.accept(fromJson(s, tClass)));
-    }
-
-    public final void onEvent(String eventName, Supplier<?> onEvent, TypeReference<?> tClass) {
-        this.onEvent(eventName, () -> {
-            var data = onEvent.get();
-            return data instanceof String str ? str : toJson(data);
-        });
-    }
-
-    public final <T> void onEvent(String eventName, Function<T, ?> onEvent, TypeReference<T> tClass) {
-        this.onEvent(eventName, s -> {
-            var data = onEvent.apply(fromJson(s, tClass));
-            return data instanceof String str ? str : toJson(data);
-        });
-    }
-
-    public final <T> void onEvent(String eventName, BiConsumer<T, TypeRequest> onEvent, TypeReference<T> tClass) {
-        this.onEvent(eventName, (s, r) -> onEvent.accept(fromJson(s, tClass), new TypeRequest(r)));
-    }
-
-    public static class TypeRequest {
-
-        private final ScxSocketRequest request;
-
-        public TypeRequest(ScxSocketRequest r) {
-            this.request = r;
-        }
-
-        public void response(String payload) {
-            request.response(payload);
-        }
-
-        public void response(Object payload) {
-            request.response(toJson(payload));
-        }
-
     }
 
 }
