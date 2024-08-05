@@ -2,7 +2,7 @@ package cool.scx.socket;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 final class RequestManager {
 
@@ -12,7 +12,7 @@ final class RequestManager {
         this.responseTaskMap = new ConcurrentHashMap<>();
     }
 
-    public void setResponseCallback(ScxSocketFrame socketFrame, BiConsumer<String, Throwable> responseCallback, RequestOptions options) {
+    public void setResponseCallback(ScxSocketFrame socketFrame, Consumer<ScxSocketResponse> responseCallback, RequestOptions options) {
         var requestTask = new RequestTask(responseCallback, this, options, socketFrame.seq_id);
         this.responseTaskMap.put(socketFrame.seq_id, requestTask);
         requestTask.start();
