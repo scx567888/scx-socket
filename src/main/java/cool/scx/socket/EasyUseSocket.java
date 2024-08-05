@@ -41,10 +41,6 @@ public class EasyUseSocket extends ScxSocket {
         sendEvent(eventName, null, DEFAULT_SEND_OPTIONS);
     }
 
-    public final void sendEvent(String eventName, String data) {
-        sendEvent(eventName, data, DEFAULT_SEND_OPTIONS);
-    }
-
     public final void sendEvent(String eventName, Object data) {
         sendEvent(eventName, toJson(data), DEFAULT_SEND_OPTIONS);
     }
@@ -59,10 +55,6 @@ public class EasyUseSocket extends ScxSocket {
 
     public final void sendEvent(String eventName, Consumer<ScxSocketResponse> responseCallback, RequestOptions options) {
         sendEvent(eventName, null, responseCallback, options);
-    }
-
-    public final void sendEvent(String eventName, String data, Consumer<ScxSocketResponse> responseCallback) {
-        sendEvent(eventName, data, responseCallback, DEFAULT_REQUEST_OPTIONS);
     }
 
     public final void sendEvent(String eventName, Object data, Consumer<ScxSocketResponse> responseCallback) {
