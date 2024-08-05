@@ -1,14 +1,9 @@
 package cool.scx.socket;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import io.vertx.core.http.WebSocketBase;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static cool.scx.socket.Helper.fromJson;
 import static cool.scx.socket.Helper.toJson;
 
 /**
