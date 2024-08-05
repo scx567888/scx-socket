@@ -6,11 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static cool.scx.common.util.StringUtils.isBlank;
-import static cool.scx.socket.EventHandler.*;
 import static cool.scx.socket.ScxSocketFrame.Type.*;
 import static cool.scx.socket.ScxSocketFrame.fromJson;
 import static java.lang.System.Logger.Level.DEBUG;
