@@ -22,7 +22,7 @@ public final class ScxSocketRequest {
             throw new UnsupportedOperationException("已经响应过 !!!");
         } else {
             alreadyResponse = true;
-            scxSocket.sendResponse(socketFrame.ack_id, payload);
+            scxSocket.sendResponse(socketFrame.seq_id, payload);
         }
     }
 
