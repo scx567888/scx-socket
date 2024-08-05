@@ -22,7 +22,7 @@ public class ScxSocket {
     final ScxSocketOptions options;
     final ScxSocketStatus status;
 
-    private final ConcurrentMap<String, Consumer<ScxSocketRequest>> eventHandlerMap;
+    private final ConcurrentMap<String, Consumer<ScxSocketRequest>> onEventMap;
     private Consumer<String> onMessage;
     private Consumer<Void> onClose;
     private Consumer<Throwable> onError;
@@ -32,7 +32,7 @@ public class ScxSocket {
         this.clientID = clientID;
         this.options = options;
         this.status = status;
-        this.eventHandlerMap = new ConcurrentHashMap<>();
+        this.onEventMap = new ConcurrentHashMap<>();
         this.onMessage = null;
         this.onClose = null;
         this.onError = null;
@@ -115,11 +115,11 @@ public class ScxSocket {
     }
 
     public final void onEvent(String eventName, Consumer<ScxSocketRequest> onEvent) {
-        this.eventHandlerMap.put(eventName, onEvent);
+        this.onEventMap.put(eventName, onEvent);
     }
 
     public final void removeEvent(String eventName) {
-        this.eventHandlerMap.remove(eventName);
+        this.onEventMap.remove(eventName);
     }
 
     //********************* 内部事件 *********************
@@ -267,12 +267,12 @@ public class ScxSocket {
     }
 
     private void _callOnEvent(ScxSocketFrame socketFrame) {
-        var eventHandler = this.eventHandlerMap.get(socketFrame.event_name);
-        if (eventHandler != null) {
+        var onEvent = this.onEventMap.get(socketFrame.event_name);
+        if (onEvent != null) {
             //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
             Thread.ofVirtual().name("scx-socket-call-on-event").start(() -> {
                 var socketRequest = new ScxSocketRequest(this, socketFrame);
-                eventHandler.accept(socketRequest);
+                onEvent.accept(socketRequest);
             });
         }
     }
