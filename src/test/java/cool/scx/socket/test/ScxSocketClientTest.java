@@ -28,7 +28,7 @@ public class ScxSocketClientTest extends InitLogger {
             System.out.println("onOpen");
 
             c.sendEvent("a", new User("jack", 24));
-            c.sendEvent("ss", List.of(new User("jack", 24)), (r) -> {
+            c.sendEvent("ss", List.of(new User("jack", 24)), r -> {
                 if (r.isSuccess()) {
                     var s = r.payload(new TypeReference<List<User>>() {});
                     System.out.println("服务端的响应 " + s);
@@ -46,8 +46,8 @@ public class ScxSocketClientTest extends InitLogger {
 
             for (int i = 0; i < 10; i++) {
                 int finalI = i;
-                c.sendEvent("aaa", i, (d) -> {
-                    System.out.println(d.payload() + "  " + finalI);
+                c.sendEvent("aaa", i, r -> {
+                    System.out.println(r.payload() + "  " + finalI);
                 });
             }
         });
