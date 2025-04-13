@@ -12,7 +12,7 @@
 
     <artifactId>scx-socket</artifactId>
     <packaging>jar</packaging>
-    <version>3.5.2</version>
+    <version>3.5.3</version>
 
     <name>SCX Socket</name>
     <url>https://github.com/scx567888/scx-socket</url>
@@ -77,7 +77,20 @@
 
         <dependency>
             <groupId>cool.scx</groupId>
+            <artifactId>scx-websocket</artifactId>
+            <version>${scx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cool.scx</groupId>
             <artifactId>scx-http-x</artifactId>
+            <version>${scx.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>cool.scx</groupId>
+            <artifactId>scx-websocket-x</artifactId>
             <version>${scx.version}</version>
             <scope>test</scope>
         </dependency>
@@ -101,7 +114,7 @@
 
     <properties>
 
-        <scx.version>3.5.2</scx.version>
+        <scx.version>3.5.3</scx.version>
         <testng.version>7.10.2</testng.version>
 
     </properties>

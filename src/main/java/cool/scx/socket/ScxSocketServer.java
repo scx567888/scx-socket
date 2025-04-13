@@ -1,6 +1,6 @@
 package cool.scx.socket;
 
-import cool.scx.http.web_socket.ScxServerWebSocket;
+import cool.scx.websocket.ScxServerWebSocket;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;

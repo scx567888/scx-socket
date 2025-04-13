@@ -2,6 +2,7 @@ package cool.scx.socket;
 
 import cool.scx.http.ScxHttpClient;
 import cool.scx.http.uri.ScxURIWritable;
+import cool.scx.websocket.ScxWebSocketClient;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,7 +27,7 @@ public final class ScxSocketClient {
     private static final System.Logger logger = getLogger(ScxSocketClient.class.getName());
 
     final ScxURIWritable connectOptions;
-    final ScxHttpClient webSocketClient;
+    final ScxWebSocketClient webSocketClient;
     final String clientID;
     final ScxSocketClientOptions options;
     final ScheduledExecutorService scheduledExecutor;
@@ -36,7 +37,7 @@ public final class ScxSocketClient {
     private Consumer<ScxClientSocket> onConnect;
     private ScheduledFuture<?> reconnectTimeout;
 
-    public ScxSocketClient(String uri, ScxHttpClient webSocketClient, String clientID, ScxSocketClientOptions options) {
+    public ScxSocketClient(String uri, ScxWebSocketClient webSocketClient, String clientID, ScxSocketClientOptions options) {
         this.connectOptions = createConnectOptions(uri, clientID);
         this.webSocketClient = webSocketClient;
         this.clientID = clientID;
@@ -45,15 +46,15 @@ public final class ScxSocketClient {
         this.executor = options.executor();
     }
 
-    public ScxSocketClient(String uri, ScxHttpClient webSocketClient, ScxSocketClientOptions options) {
+    public ScxSocketClient(String uri, ScxWebSocketClient webSocketClient, ScxSocketClientOptions options) {
         this(uri, webSocketClient, randomUUID(), options);
     }
 
-    public ScxSocketClient(String uri, ScxHttpClient webSocketClient, String clientID) {
+    public ScxSocketClient(String uri, ScxWebSocketClient webSocketClient, String clientID) {
         this(uri, webSocketClient, clientID, new ScxSocketClientOptions());
     }
 
-    public ScxSocketClient(String uri, ScxHttpClient webSocketClient) {
+    public ScxSocketClient(String uri, ScxWebSocketClient webSocketClient) {
         this(uri, webSocketClient, randomUUID(), new ScxSocketClientOptions());
     }
 
