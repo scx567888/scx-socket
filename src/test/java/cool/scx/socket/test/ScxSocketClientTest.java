@@ -3,6 +3,7 @@ package cool.scx.socket.test;
 import com.fasterxml.jackson.core.type.TypeReference;
 import cool.scx.http.x.XHttpClient;
 import cool.scx.socket.ScxSocketClient;
+import cool.scx.websocket.x.XWebSocketClient;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -16,10 +17,10 @@ public class ScxSocketClientTest extends InitLogger {
 //    @Test
     public static void test1() {
         //启动服务器
-//        ScxSocketServerTest.test1();
+        ScxSocketServerTest.test1();
 
 //        var webSocketClient = new HelidonHttpClient();
-        var webSocketClient = new XHttpClient();
+        var webSocketClient = new XWebSocketClient();
 
         var scxSocketClient = new ScxSocketClient("ws://127.0.0.1:8990/test", webSocketClient);
 

@@ -1,7 +1,7 @@
 package cool.scx.socket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import cool.scx.http.web_socket.ScxWebSocket;
+import cool.scx.websocket.ScxWebSocket;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

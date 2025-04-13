@@ -1,7 +1,7 @@
 package cool.scx.socket;
 
 
-import cool.scx.http.web_socket.ScxWebSocket;
+import cool.scx.websocket.ScxWebSocket;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;

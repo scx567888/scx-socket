@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cool.scx.common.util.ObjectUtils;
 import cool.scx.http.uri.ScxURI;
 import cool.scx.http.uri.ScxURIWritable;
-import cool.scx.http.web_socket.ScxServerWebSocket;
+import cool.scx.websocket.ScxServerWebSocket;
 
 import static cool.scx.common.exception.ScxExceptionHelper.wrap;
 
