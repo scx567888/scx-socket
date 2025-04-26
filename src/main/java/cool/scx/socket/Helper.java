@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cool.scx.common.util.ObjectUtils;
 import cool.scx.http.uri.ScxURI;
 import cool.scx.http.uri.ScxURIWritable;
-import cool.scx.websocket.ScxServerWebSocket;
+import cool.scx.websocket.ScxServerWebSocketHandshakeRequest;
 
 import static cool.scx.common.exception.ScxExceptionHelper.wrap;
 
@@ -28,8 +28,8 @@ public final class Helper {
      * @param serverWebSocket serverWebSocket
      * @return clientID 没有返回 null
      */
-    public static String getClientID(ScxServerWebSocket serverWebSocket) {
-        return serverWebSocket.uri().getQuery(SCX_SOCKET_CLIENT_ID);
+    public static String getClientID(ScxServerWebSocketHandshakeRequest serverWebSocket) {
+        return serverWebSocket.getQuery(SCX_SOCKET_CLIENT_ID);
     }
 
     /**
