@@ -1,6 +1,6 @@
 package cool.scx.socket;
 
-import cool.scx.websocket.ScxWebSocket;
+import cool.scx.websocket.handler.ScxEventWebSocket;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -26,7 +26,7 @@ public class ScxSocket {
 
     protected final System.Logger logger = getLogger(this.getClass().getName());
 
-    final ScxWebSocket webSocket;
+    final ScxEventWebSocket webSocket;
     final String clientID;
     final ScxSocketOptions options;
     final ScxSocketStatus status;
@@ -39,7 +39,7 @@ public class ScxSocket {
     private BiConsumer<Integer, String> onClose;
     private Consumer<Throwable> onError;
 
-    ScxSocket(ScxWebSocket webSocket, String clientID, ScxSocketOptions options, ScxSocketStatus status) {
+    ScxSocket(ScxEventWebSocket webSocket, String clientID, ScxSocketOptions options, ScxSocketStatus status) {
         this.webSocket = webSocket;
         this.clientID = clientID;
         this.options = options;
@@ -52,7 +52,7 @@ public class ScxSocket {
         this.onError = null;
     }
 
-    ScxSocket(ScxWebSocket webSocket, String clientID, ScxSocketOptions options) {
+    ScxSocket(ScxEventWebSocket webSocket, String clientID, ScxSocketOptions options) {
         this(webSocket, clientID, options, new ScxSocketStatus(options));
     }
 
@@ -212,6 +212,7 @@ public class ScxSocket {
         this.status.frameSender.startAllSendTask(this);
         //启动 校验重复清除任务
         this.status.duplicateFrameChecker.startAllClearTask();
+        Thread.ofVirtual().start(this.webSocket::start);
     }
 
     public void close() {

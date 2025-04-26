@@ -1,6 +1,6 @@
 package cool.scx.socket;
 
-import cool.scx.websocket.ScxServerWebSocket;
+import cool.scx.websocket.handler.ScxEventWebSocket;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -19,12 +19,12 @@ public final class ScxServerSocket extends PingPongManager {
     private final ScxSocketServer scxSocketServer;
     private ScheduledFuture<?> removeClosedClientTimeout;
 
-    ScxServerSocket(ScxServerWebSocket serverWebSocket, String clientID, ScxSocketServer scxSocketServer) {
+    ScxServerSocket(ScxEventWebSocket serverWebSocket, String clientID, ScxSocketServer scxSocketServer) {
         super(serverWebSocket, clientID, scxSocketServer.options);
         this.scxSocketServer = scxSocketServer;
     }
 
-    ScxServerSocket(ScxServerWebSocket serverWebSocket, String clientID, ScxSocketServer scxSocketServer, ScxSocketStatus status) {
+    ScxServerSocket(ScxEventWebSocket serverWebSocket, String clientID, ScxSocketServer scxSocketServer, ScxSocketStatus status) {
         super(serverWebSocket, clientID, scxSocketServer.options, status);
         this.scxSocketServer = scxSocketServer;
     }

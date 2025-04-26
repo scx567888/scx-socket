@@ -1,6 +1,7 @@
 package cool.scx.socket;
 
-import cool.scx.websocket.ScxServerWebSocket;
+import cool.scx.websocket.ScxServerWebSocketHandshakeRequest;
+import cool.scx.websocket.handler.ScxEventWebSocket;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,15 +45,15 @@ public final class ScxSocketServer {
         }
     }
 
-    public void call(ScxServerWebSocket serverWebSocket) {
-        var clientID = getClientID(serverWebSocket);
+    public void call(ScxServerWebSocketHandshakeRequest handshakeRequest) {
+        var clientID = getClientID(handshakeRequest);
         if (clientID == null) {
             //todo 如何拒绝连接
-            serverWebSocket.close();
+            handshakeRequest.response().status(400).send();
 //            serverWebSocket.close(400);
             return;
         }
-
+        var serverWebSocket= ScxEventWebSocket.of(handshakeRequest.webSocket());
         var serverSocket = serverSockets.compute(clientID, (k, old) -> {
             if (old == null) {
                 return new ScxServerSocket(serverWebSocket, clientID, this);
