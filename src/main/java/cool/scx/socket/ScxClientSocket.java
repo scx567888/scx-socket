@@ -1,6 +1,7 @@
 package cool.scx.socket;
 
 import cool.scx.websocket.ScxWebSocket;
+import cool.scx.websocket.handler.ScxEventWebSocket;
 
 /**
  * 客户端 Socket 对象
@@ -12,12 +13,12 @@ public final class ScxClientSocket extends PingPongManager {
 
     private final ScxSocketClient socketClient;
 
-    ScxClientSocket(ScxWebSocket webSocket, String clientID, ScxSocketClient socketClient) {
+    ScxClientSocket(ScxEventWebSocket webSocket, String clientID, ScxSocketClient socketClient) {
         super(webSocket, clientID, socketClient.options);
         this.socketClient = socketClient;
     }
 
-    ScxClientSocket(ScxWebSocket webSocket, String clientID, ScxSocketClient socketClient, ScxSocketStatus status) {
+    ScxClientSocket(ScxEventWebSocket webSocket, String clientID, ScxSocketClient socketClient, ScxSocketStatus status) {
         super(webSocket, clientID, socketClient.options, status);
         this.socketClient = socketClient;
     }

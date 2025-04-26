@@ -1,8 +1,8 @@
 package cool.scx.socket;
 
-import cool.scx.http.ScxHttpClient;
 import cool.scx.http.uri.ScxURIWritable;
 import cool.scx.websocket.ScxWebSocketClient;
+import cool.scx.websocket.handler.ScxEventWebSocket;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
@@ -80,17 +80,18 @@ public final class ScxSocketClient {
         //创建连接
 
         try {
-            webSocketClient.webSocketHandshakeRequest()
+            var ws = webSocketClient.webSocketHandshakeRequest()
                     .uri(connectOptions)
-                    .onWebSocket(webSocket -> {
-                        //如果存在旧的 则使用旧的 status
-                        this.clientSocket = clientSocket != null ?
-                                new ScxClientSocket(webSocket, clientID, this, clientSocket.status) :
-                                new ScxClientSocket(webSocket, clientID, this);
+                    .webSocket();
+            var webSocket = ScxEventWebSocket.of(ws);
+            //如果存在旧的 则使用旧的 status
+            this.clientSocket = clientSocket != null ?
+                    new ScxClientSocket(webSocket, clientID, this, clientSocket.status) :
+                    new ScxClientSocket(webSocket, clientID, this);
 
-                        this.clientSocket.start();
-                        this._callOnConnect(clientSocket);
-                    });
+            this.clientSocket.start();
+            this._callOnConnect(clientSocket);
+                    
         } catch (Exception e) {
             this.reconnect(e);
         }

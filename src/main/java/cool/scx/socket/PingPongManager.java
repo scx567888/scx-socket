@@ -2,6 +2,7 @@ package cool.scx.socket;
 
 
 import cool.scx.websocket.ScxWebSocket;
+import cool.scx.websocket.handler.ScxEventWebSocket;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -23,12 +24,12 @@ abstract class PingPongManager extends EasyUseSocket {
     private ScheduledFuture<?> ping;
     private ScheduledFuture<?> pingTimeout;
 
-    public PingPongManager(ScxWebSocket webSocket, String clientID, PingPongOptions options, ScxSocketStatus status) {
+    public PingPongManager(ScxEventWebSocket webSocket, String clientID, PingPongOptions options, ScxSocketStatus status) {
         super(webSocket, clientID, options, status);
         this.pingPongOptions = options;
     }
 
-    public PingPongManager(ScxWebSocket webSocket, String clientID, PingPongOptions options) {
+    public PingPongManager(ScxEventWebSocket webSocket, String clientID, PingPongOptions options) {
         super(webSocket, clientID, options);
         this.pingPongOptions = options;
     }
