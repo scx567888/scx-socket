@@ -1,7 +1,7 @@
 package cool.scx.socket;
 
 import cool.scx.websocket.ScxServerWebSocketHandshakeRequest;
-import cool.scx.websocket.handler.ScxEventWebSocket;
+import cool.scx.websocket.event.ScxEventWebSocket;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
