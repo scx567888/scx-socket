@@ -269,21 +269,21 @@ public class ScxSocket {
     private void _callOnMessage(String message) {
         if (this.onMessage != null) {
             //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
-             this.onMessage.accept(message);
+            this.onMessage.accept(message);
         }
     }
 
     private void _callOnClose(Integer code, String reason) {
         if (this.onClose != null) {
             //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
-             this.onClose.accept(code, reason);
+            this.onClose.accept(code, reason);
         }
     }
 
     private void _callOnError(Throwable e) {
         if (this.onError != null) {
             //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
-             this.onError.accept(e);
+            this.onError.accept(e);
         }
     }
 
@@ -291,10 +291,10 @@ public class ScxSocket {
         var onEvent = this.onEventMap.get(socketFrame.event_name);
         if (onEvent != null) {
             //为了防止用户回调 将线程卡死 这里独立创建一个线程处理
-            
-                var socketRequest = new ScxSocketRequest(this, socketFrame);
-                onEvent.accept(socketRequest);
-            
+
+            var socketRequest = new ScxSocketRequest(this, socketFrame);
+            onEvent.accept(socketRequest);
+
         }
     }
 

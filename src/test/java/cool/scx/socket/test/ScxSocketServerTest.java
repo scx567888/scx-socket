@@ -1,10 +1,10 @@
 package cool.scx.socket.test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import cool.scx.websocket.ScxServerWebSocketHandshakeRequest;
 import cool.scx.http.x.HttpServer;
 import cool.scx.http.x.HttpServerOptions;
 import cool.scx.socket.ScxSocketServer;
+import cool.scx.websocket.ScxServerWebSocketHandshakeRequest;
 import cool.scx.websocket.x.WebSocketUpgradeHandler;
 import org.testng.annotations.Test;
 

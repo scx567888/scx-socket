@@ -1,6 +1,5 @@
 package cool.scx.socket;
 
-import cool.scx.websocket.ScxWebSocket;
 import cool.scx.websocket.event.ScxEventWebSocket;
 
 /**

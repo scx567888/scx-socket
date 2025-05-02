@@ -53,7 +53,7 @@ public final class ScxSocketServer {
 //            serverWebSocket.close(400);
             return;
         }
-        var serverWebSocket= ScxEventWebSocket.of(handshakeRequest.webSocket(), executor);
+        var serverWebSocket = ScxEventWebSocket.of(handshakeRequest.webSocket(), executor);
         var serverSocket = serverSockets.compute(clientID, (k, old) -> {
             if (old == null) {
                 return new ScxServerSocket(serverWebSocket, clientID, this);

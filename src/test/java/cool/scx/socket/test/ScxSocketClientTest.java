@@ -1,7 +1,6 @@
 package cool.scx.socket.test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import cool.scx.http.x.HttpClient;
 import cool.scx.socket.ScxSocketClient;
 import cool.scx.websocket.x.WebSocketClient;
 import org.testng.annotations.Test;
