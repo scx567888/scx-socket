@@ -1,10 +1,10 @@
 package cool.scx.socket.test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import cool.scx.websocket.ScxServerWebSocketHandshakeRequest;
-import cool.scx.http.x.XHttpServer;
-import cool.scx.http.x.XHttpServerOptions;
+import cool.scx.http.x.HttpServer;
+import cool.scx.http.x.HttpServerOptions;
 import cool.scx.socket.ScxSocketServer;
+import cool.scx.websocket.ScxServerWebSocketHandshakeRequest;
 import cool.scx.websocket.x.WebSocketUpgradeHandler;
 import org.testng.annotations.Test;
 
@@ -65,13 +65,13 @@ public class ScxSocketServerTest extends InitLogger {
 //                .start();
 
         //使用 httpServer
-        new XHttpServer(new XHttpServerOptions().port(8990).addUpgradeHandlerList(new WebSocketUpgradeHandler()))
+        new HttpServer(new HttpServerOptions().addUpgradeHandler(new WebSocketUpgradeHandler()))
                 .onRequest(c -> {
                     if (c instanceof ScxServerWebSocketHandshakeRequest s) {
                         scxSocketServer.call(s);
                     }
                 })
-                .start();
+                .start(8990);
 
     }
 

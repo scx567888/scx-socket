@@ -1,7 +1,7 @@
 package cool.scx.socket;
 
 import cool.scx.websocket.ScxServerWebSocketHandshakeRequest;
-import cool.scx.websocket.handler.ScxEventWebSocket;
+import cool.scx.websocket.event.ScxEventWebSocket;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,7 +53,7 @@ public final class ScxSocketServer {
 //            serverWebSocket.close(400);
             return;
         }
-        var serverWebSocket= ScxEventWebSocket.of(handshakeRequest.webSocket());
+        var serverWebSocket = ScxEventWebSocket.of(handshakeRequest.webSocket(), executor);
         var serverSocket = serverSockets.compute(clientID, (k, old) -> {
             if (old == null) {
                 return new ScxServerSocket(serverWebSocket, clientID, this);

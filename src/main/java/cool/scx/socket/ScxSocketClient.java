@@ -2,7 +2,7 @@ package cool.scx.socket;
 
 import cool.scx.http.uri.ScxURIWritable;
 import cool.scx.websocket.ScxWebSocketClient;
-import cool.scx.websocket.handler.ScxEventWebSocket;
+import cool.scx.websocket.event.ScxEventWebSocket;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
@@ -83,7 +83,7 @@ public final class ScxSocketClient {
             var ws = webSocketClient.webSocketHandshakeRequest()
                     .uri(connectOptions)
                     .webSocket();
-            var webSocket = ScxEventWebSocket.of(ws);
+            var webSocket = ScxEventWebSocket.of(ws, executor);
             //如果存在旧的 则使用旧的 status
             this.clientSocket = clientSocket != null ?
                     new ScxClientSocket(webSocket, clientID, this, clientSocket.status) :
@@ -91,7 +91,7 @@ public final class ScxSocketClient {
 
             this.clientSocket.start();
             this._callOnConnect(clientSocket);
-                    
+
         } catch (Exception e) {
             this.reconnect(e);
         }
