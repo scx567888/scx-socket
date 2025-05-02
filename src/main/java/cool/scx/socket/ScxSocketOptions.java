@@ -33,8 +33,8 @@ public class ScxSocketOptions {
         this.duplicateFrameCheckerClearTimeout = 1000 * 60 * 10;
         // 默认 cpu 核心数 2倍
         this.scheduledExecutor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
-        // 默认 cpu 核心数 2倍
-        this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+        // 默认单线程 无限队列长度
+        this.executor = Executors.newSingleThreadExecutor();
     }
 
     public int getDuplicateFrameCheckerClearTimeout() {
