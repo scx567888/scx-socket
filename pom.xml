@@ -114,7 +114,7 @@
 
     <properties>
 
-        <scx.version>3.6.7</scx.version>
+        <scx.version>3.6.8</scx.version>
         <testng.version>7.10.2</testng.version>
 
     </properties>
