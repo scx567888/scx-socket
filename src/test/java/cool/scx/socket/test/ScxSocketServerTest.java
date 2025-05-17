@@ -8,16 +8,17 @@ import cool.scx.websocket.ScxServerWebSocketHandshakeRequest;
 import cool.scx.websocket.x.WebSocketUpgradeHandler;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ScxSocketServerTest extends InitLogger {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         test1();
     }
 
     @Test
-    public static void test1() {
+    public static void test1() throws IOException {
         //创建服务器
         var scxSocketServer = new ScxSocketServer();
 

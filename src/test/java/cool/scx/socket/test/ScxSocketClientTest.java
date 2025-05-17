@@ -5,16 +5,17 @@ import cool.scx.socket.ScxSocketClient;
 import cool.scx.websocket.x.WebSocketClient;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ScxSocketClientTest extends InitLogger {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         test1();
     }
 
 //    @Test
-    public static void test1() {
+    public static void test1() throws IOException {
         //启动服务器
         ScxSocketServerTest.test1();
 
