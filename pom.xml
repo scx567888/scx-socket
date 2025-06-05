@@ -12,7 +12,7 @@
 
     <artifactId>scx-socket</artifactId>
     <packaging>jar</packaging>
-    <version>3.7.9</version>
+    <version>3.8.0</version>
 
     <name>SCX Socket</name>
     <url>https://github.com/scx567888/scx-socket</url>
