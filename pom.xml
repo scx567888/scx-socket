@@ -98,7 +98,7 @@
         <dependency>
             <groupId>cool.scx</groupId>
             <artifactId>scx-logging</artifactId>
-            <version>${scx.version}</version>
+            <version>${scx-logging.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -115,6 +115,7 @@
     <properties>
 
         <scx.version>3.8.5</scx.version>
+        <scx-logging.version>3.8.5</scx-logging.version>
         <testng.version>7.10.2</testng.version>
 
     </properties>
