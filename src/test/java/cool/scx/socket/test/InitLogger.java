@@ -1,11 +1,11 @@
 package cool.scx.socket.test;
 
-import cool.scx.logging.ScxLoggerFactory;
+import cool.scx.logging.ScxLogging;
 
 public class InitLogger {
 
     static {
-        ScxLoggerFactory.rootConfig().setLevel(System.Logger.Level.ERROR);
+        ScxLogging.rootConfig().setLevel(System.Logger.Level.ERROR);
     }
 
 }
