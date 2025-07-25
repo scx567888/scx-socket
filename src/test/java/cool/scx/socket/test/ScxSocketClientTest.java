@@ -1,9 +1,8 @@
 package cool.scx.socket.test;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import cool.scx.reflect.TypeReference;
 import cool.scx.socket.ScxSocketClient;
 import cool.scx.websocket.x.WebSocketClient;
-import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.List;

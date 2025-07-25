@@ -1,6 +1,6 @@
 package cool.scx.socket;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import cool.scx.reflect.TypeReference;
 
 import static cool.scx.socket.Helper.fromJson;
 

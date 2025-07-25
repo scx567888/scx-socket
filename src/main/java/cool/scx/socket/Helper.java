@@ -1,13 +1,10 @@
 package cool.scx.socket;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import cool.scx.common.util.ObjectUtils;
 import cool.scx.http.uri.ScxURI;
 import cool.scx.http.uri.ScxURIWritable;
+import cool.scx.object.ScxObject;
+import cool.scx.reflect.TypeReference;
 import cool.scx.websocket.ScxServerWebSocketHandshakeRequest;
-
-import static cool.scx.common.exception.ScxExceptionHelper.wrap;
 
 
 /**
@@ -19,8 +16,6 @@ import static cool.scx.common.exception.ScxExceptionHelper.wrap;
 public final class Helper {
 
     public static final String SCX_SOCKET_CLIENT_ID = "scx-socket-client-id";
-
-    private static final ObjectMapper JSON_MAPPER = ObjectUtils.jsonMapper();
 
     /**
      * 从 ServerWebSocket 中获取 clientID
@@ -55,15 +50,15 @@ public final class Helper {
     }
 
     public static String toJson(Object data) {
-        return wrap(() -> JSON_MAPPER.writeValueAsString(data));
+        return ScxObject.toJson(data);
     }
 
     public static <T> T fromJson(String json, Class<T> tClass) {
-        return json == null ? null : wrap(() -> JSON_MAPPER.readValue(json, tClass));
+        return json == null ? null :  ScxObject.fromJson(json, tClass);
     }
 
     public static <T> T fromJson(String json, TypeReference<T> valueTypeRef) {
-        return json == null ? null : wrap(() -> JSON_MAPPER.readValue(json, valueTypeRef));
+        return json == null ? null : ScxObject.fromJson(json, valueTypeRef);
     }
 
 }
