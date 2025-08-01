@@ -114,7 +114,7 @@
 
     <properties>
 
-        <scx.version>3.8.8</scx.version>
+        <scx.version>3.8.9</scx.version>
         <scx-logging.version>4.0.0</scx-logging.version>
         <testng.version>7.10.2</testng.version>
 
