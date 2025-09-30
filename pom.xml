@@ -11,14 +11,21 @@
     </parent>
 
     <artifactId>scx-socket</artifactId>
+    <version>3.8.10</version>
     <packaging>jar</packaging>
-    <version>3.8.9</version>
 
     <name>SCX Socket</name>
-    <url>https://github.com/scx567888/scx-socket</url>
     <description>
         A WebSocket framework
     </description>
+    <url>https://github.com/scx567888/scx-socket</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://github.com/scx567888/scx-socket/blob/master/LICENSE</url>
+        </license>
+    </licenses>
 
     <developers>
         <developer>
@@ -27,13 +34,6 @@
             <email>scx567888@outlook.com</email>
         </developer>
     </developers>
-
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>https://github.com/scx567888/scx-socket/blob/master/LICENSE</url>
-        </license>
-    </licenses>
 
     <scm>
         <connection>scm:git:https://github.com/scx567888/scx-socket.git</connection>
@@ -114,8 +114,8 @@
 
     <properties>
 
-        <scx.version>3.8.9</scx.version>
-        <scx-logging.version>4.0.0</scx-logging.version>
+        <scx.version>3.8.10</scx.version>
+        <scx-logging.version>4.1.0</scx-logging.version>
         <testng.version>7.10.2</testng.version>
 
     </properties>
