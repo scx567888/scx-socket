@@ -6,7 +6,7 @@
     <parent>
         <groupId>cool.scx</groupId>
         <artifactId>scx-parent</artifactId>
-        <version>27</version>
+        <version>28</version>
         <relativePath/>
     </parent>
 
@@ -116,7 +116,7 @@
 
         <scx.version>3.8.10</scx.version>
         <scx-logging.version>4.1.0</scx-logging.version>
-        <testng.version>7.10.2</testng.version>
+        <testng.version>7.11.0</testng.version>
 
     </properties>
 
